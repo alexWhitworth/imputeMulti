@@ -29,21 +29,23 @@ data_lik_multi <- function(dat) {
   p <- ncol(dat)
   
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
-  enum_comp <- enum[complete.cases(enum),]  # all possible observed patterns
-  enum_miss <- enum[!complete.cases(enum),] # all possible missingness patterns
+  enum_comp <- enum[complete.cases(enum),] 
+  enum_miss <- enum[!complete.cases(enum),]
   rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
   
   # 02. get counts / sufficient statistics
   #   calculate data-dependent prior
   #   Define O_s, M_s 
   #----------------------------------------------
+  dat_comp <- dat[complete.cases(dat),]
+  dat_miss <- dat[!complete.cases(dat),]
   # complete data sufficient statistics
-  x_y     <- count_levels(dat, enum_list= enum_comp, hasNA= "no") 
+  x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no") 
   # missing data marginal sufficient statistics
-  z_Os_y  <- count_levels(dat, enum_list= enum_miss, hasNA= "count.obs") 
-  rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
+  z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.obs") 
+  # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
-  prior <- data_dep_prior_multi(dat= dat)
+  alpha <- data_dep_prior_multi(dat= dat)
   
   # Define O_s, M_s 
     ### O_s(y) is the set of missingness patterns for which y is observed  (y \in [1, p])

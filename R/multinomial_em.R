@@ -1,7 +1,7 @@
 
 
 
-multinomial_em <- function(x_y, O_s, M_s, enum_comp,
+multinomial_em <- function(x_y, z_Os_y, O_s, M_s, enum_comp, n_obs,
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative", "select"), 
                            alpha= NULL) {
   # check some errors
@@ -10,6 +10,7 @@ multinomial_em <- function(x_y, O_s, M_s, enum_comp,
     stop("Please supply argument alpha as prior.")
   }
   
+  count_col <- ncol(z_Os_y)
   
   # 01. Merge in prior if supplied; calculate if requested
   #----------------------------------------------
@@ -40,19 +41,43 @@ multinomial_em <- function(x_y, O_s, M_s, enum_comp,
   
   # 02. E and M Steps
   #----------------------------------------------
-  enum_comp$theta <- 0
-  for (s in 1:nrow(z_Os_y)) {
-    if (length(O_s[[s]]) > 0) {
-      if (z_Os_y$counts[s] > 0) {
-        if (length(M_s[[s]]) == 0) {
-          enum_comp$theta[s] <- enum_comp$theta[s] + z_Os_y$counts[s]
-        } else {
-          n <- 0
-          
+  repeat{
+  # E Step
+  enum_comp$counts <- 0
+  for (y in 1:nrow(enum_comp)) {
+    # complete data
+    if (y %in% rownames(x_y)) enum_comp$counts[y] <- x_y$counts[rownames(x_y) == y]
+    else {
+      for (s in 1:nrow(z_Os_y)) {
+        if (length(O_s[[s]]) > 0) {
+          if (z_Os_y$counts[s] > 0) {
+            if (length(M_s[[s]]) == 0) {
+              cnts[] <- cnts[s] + z_Os_y$counts[s] # not quite right
+            } else {
+              n <- 0 # need to update this part
+              sub_rows <- as.vector(marg_array_comp(z_Os_y[s, -count_col], enum_comp))
+              n <- n + sum(enum_comp$theta_y[sub_rows])
+              cnts
+            }
+          }
         }
       }
     }
   }
   
+  # M Step
+  if (conj_prior == "none") {
+    enum_comp$theta_y1 <- enum_comp$counts / n_obs
+  } else {
+    alpha_0 <- sum(enum_comp$alpha)
+    enum_comp$theta_y1 <- (enum_comp$counts + enum_comp$alpha - 1) / (n_obs + alpha_0 - D) 
+    # double check what D should be; also currently undefined in code
+  }
+  
+  # 03. check to exit
+  #----------------------------------------------
+  
+  
+  }
   
 }

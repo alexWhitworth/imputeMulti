@@ -7,7 +7,7 @@
 # #' with \code{dat}.
 # #' @param hasNA A string. Denotes if \code{dat} has complete data or not. If missing
 # #' then should only observed patterns be counted or should missing patterns be counted?
-count_levels <- function(dat, enum_list, hasNA= c("no", "count,obs", "count.miss")) {
+count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss")) {
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   
   enum_list$counts <- NA
