@@ -31,6 +31,7 @@ data_lik_multi <- function(dat) {
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
   enum_comp <- enum[complete.cases(enum),]  # all possible observed patterns
   enum_miss <- enum[!complete.cases(enum),] # all possible missingness patterns
+  rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
   
   # 02. get counts / sufficient statistics
   #   calculate data-dependent prior
@@ -43,9 +44,6 @@ data_lik_multi <- function(dat) {
   rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
   prior <- data_dep_prior_multi(dat= dat)
-  enum_comp <- merge(enum_comp, prior)
-  enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
-  rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
   
   # Define O_s, M_s 
     ### O_s(y) is the set of missingness patterns for which y is observed  (y \in [1, p])
@@ -58,22 +56,13 @@ data_lik_multi <- function(dat) {
   
   # 03. E and M Steps
   #----------------------------------------------
-  enum_comp$theta <- 0
-  for (s in 1:nrow(z_Os_y)) {
-    if (length(O_s[[s]]) > 0) {
-      if (z_Os_y$counts[s] > 0) {
-        if (length(M_s[[s]]) == 0) {
-          enum_comp$theta[s] <- enum_comp$theta[s] + z_Os_y$counts[s]
-        } else {
-          n <- 0
-          
-        }
-      }
-    }
-  }
+  
   
   
 }
+
+
+
 
 
 

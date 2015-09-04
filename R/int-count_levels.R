@@ -33,3 +33,17 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count,obs", "count.miss
   }; options(warn= 0)
   return(enum_list[enum_list$counts > 0,])
 }
+
+
+# #' @description Compare an array with missing values \code{marg} to an array with 
+# #' complete values \code{complete}. Return the elements of \code{complete} that 
+# #' match the marginal values of \code{marg}
+# #' @param marg A two dimensional array with missing values
+# #' @param complete A two dimensional array without missing values
+# #' @return A \code{list} of marginal matches.
+marg_array_comp <- function(marg, complete) {
+  apply(marg, 1, function(comparison) {
+    which(apply(complete, 1, function(x, comparison) all(x == comparison, na.rm=TRUE), 
+                comparison= comparison))  
+  })
+}
