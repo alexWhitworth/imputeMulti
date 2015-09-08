@@ -24,7 +24,7 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     }, dat= dat)
     
   } else if (hasNA == "count.obs") {
-    dat <- dat[!complete.cases(dat),]
+    dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
     #-------------language agnostic code... R implementation below
     #     for (i in 1:nrow(enum_list)) {
     #       enum_list$counts[i] <- sum(apply(dat, 1, function(x, case) all(x == case, na.rm=TRUE), 
@@ -32,10 +32,12 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     #     }
     #-------------
     enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
-      sum(apply(dat, 1, function(y, case) all(y == case, na.rm=TRUE), case= x))
+      sum(apply(dat, 1, function(y, case) {
+        all(which(is.na(y)) == which(is.na(case))) & all(y == case, na.rm= TRUE)
+      }, case= x))
     }, dat= dat)
-    
   } else if (hasNA == "count.miss") {
+    dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
     #------------- language agnostic code... R implementation below
     #     for (i in 1:nrow(enum_list)) {
     #       enum_list$counts[i] <- sum(apply(dat, 1, function(x, case) {
@@ -43,13 +45,13 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     #       }, case= enum_list[i, -ncol(enum_list)]))
     #     }
     #-------------
-    dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
     enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
       sum(apply(dat, 1, function(y, case) {
-        which(is.na(y)) == which(is.na(case)) && all(y == case, na.rm= TRUE)
+        all(which(is.na(y)) == which(is.na(case))) & all(y == case, na.rm= TRUE)
       }, case= x))
     }, dat= dat)
-  }; options(warn= 0)
+  }
+  options(warn= 0)
   return(enum_list[enum_list$counts > 0,])
 }
 
