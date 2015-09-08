@@ -13,15 +13,30 @@
 
 
 #' @param dat A \code{data.frame}. All variables must be factors
+#' @param conj_prior A string specifying the conjugate prior. One of 
+#' \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.
+#' @param alpha The vector of counts $\alpha$ for a $Dir(\alpha)$ prior. Must be specified if 
+#' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
+#' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
+#' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
 #' @references Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. 
 #' CRC press, 1997. 
-#' @seealso \code{\link{expand.grid}}, \code{\link{data_dep_prior_multi}}
+#' @seealso \code{\link{expand.grid}}, \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
 #' @export
-data_lik_multi <- function(dat) {
+data_lik_multi <- function(dat,
+                           conj_prior= c("none", "data.dep", "flat.prior", "non.informative", "select"),
+                           alpha= NULL, verbose= FALSE) {
   if (!all(apply(dat, 2, is.factor))) {
     # enforce factor variables
     dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
   }
+  
+  conj_prior <- match.arg(conj_prior, several.ok= FALSE)
+  if (conj_prior %in% c("data.dep", "flat.prior") & is.null(alpha) ) {
+    stop("Please supply argument alpha as prior.")
+  }
+  
+  
   
   # 01. initialize: 
   #   enumerate observed and missing patterns
@@ -31,11 +46,11 @@ data_lik_multi <- function(dat) {
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
   enum_comp <- enum[complete.cases(enum),] 
   enum_miss <- enum[!complete.cases(enum),]
+  enum_miss <- enum_miss[apply(enum_miss, 1, function(x) !all(is.na(x))),] # not all missing
   rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
   
   # 02. get counts / sufficient statistics
-  #   calculate data-dependent prior
-  #   Define O_s, M_s 
+  #   parse / compute prior
   #----------------------------------------------
   dat_comp <- dat[complete.cases(dat),]
   dat_miss <- dat[!complete.cases(dat),]
@@ -45,26 +60,28 @@ data_lik_multi <- function(dat) {
   z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.obs") 
   # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
-  alpha <- data_dep_prior_multi(dat= dat)
-  
-  # Define O_s, M_s 
-    ### O_s(y) is the set of missingness patterns for which y is observed  (y \in [1, p])
-    ### M_s(y) is the set of missingness patterns for which y is missing
-    ### O_s = {O_s(1), ..., O_s(p)}
-    ### M_s = {M_s(1), ..., M_s(p)}
-  O_s <- apply(z_Os_y, 1, function(x) which(!is.na(x)))
-  M_s <- apply(z_Os_y, 1, function(x) which(is.na(x)))
+  if (conj_prior == "data.dep") {
+    alpha <- data_dep_prior_multi(dat= dat)
+  } else if (conj_prior == "flat.prior") {
+    if (!(is.vector(alpha) & length(alpha) == 1)) {
+      stop("Flat priors must be supplied as a scalar.")
+    }
+    alpha <- alpha
+  } else if (conj_prior == "non.informative") {
+    enum_comp$alpha <- 1
+  } else if (conj_prior == "select") {
+    stop("Functionality not implemented yet.")
+  }
   
   
   # 03. E and M Steps
   #----------------------------------------------
-  
+  # defaults  for tol and max_iter
+  mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, n_obs= nrow(dat),
+                                    conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
   
   
 }
-
-
-
 
 
 
