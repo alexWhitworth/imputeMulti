@@ -71,9 +71,14 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       miss_ind <- marg_comp_compare(marg= z_Os_y[, -z_p], complete= enum_comp[y, 1:count_p],
                                   marg_to_comp= FALSE)
       if (length(miss_ind) == 0) { # if no missing, all observed
-        enum_comp$counts[y] <- x_y$counts[which(rownames(x_y) == y)]
-        log_lik <- log_lik + x_y$counts[which(rownames(x_y) == y)] * 
-                                   log(enum_comp$theta_y[which(rownames(x_y) == y)])
+        if (any(rownames(x_y) == y)) {
+          enum_comp$counts[y] <- x_y$counts[which(rownames(x_y) == y)]
+          log_lik <- log_lik + x_y$counts[which(rownames(x_y) == y)] * 
+            log(enum_comp$theta_y[which(rownames(x_y) == y)])
+        } else {
+          enum_comp$counts[y] <- 0
+        }
+        
       } else { # allocate observed marginal counts proportionally to complete pattern y
         # E(x_y| z_Os_y, theta) = \sum_s [E_Xsy_Zy_theta]
         # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
@@ -116,6 +121,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       enum_comp$theta_y1 <- NULL
       return(list(call= mc, iter= iter, mle_cp= NULL, MLEx_y= enum_comp))
     }
+    enum_comp$theta_y <- enum_comp$theta_y1
   }
   # 04. if iter >= max_iter, exit
   #----------------------------------------------
