@@ -18,7 +18,7 @@ multinomial_em(x_y, z_Os_y, enum_comp, n_obs, conj_prior = c("none",
 \item{conj_prior}{A string specifying the conjugate prior. One of
 \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.}
 
-\item{alpha}{The vector of counts $\alpha$ for a $Dir(\alpha)$ prior. Must be specified if
+\item{alpha}{The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
 as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
 

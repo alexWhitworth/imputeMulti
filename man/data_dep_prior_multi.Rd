@@ -10,12 +10,12 @@ data_dep_prior_multi(dat)
 \item{dat}{A \code{data.frame}. All variables must be factors}
 }
 \value{
-A \code{data.frame} containing identifiers for all possible $P(Y=y)$ and
-the associated prior-counts, $\alpha$.
+A \code{data.frame} containing identifiers for all possible \eqn{P(Y=y)} and
+the associated prior-counts, \eqn{\alpha}
 }
 \description{
 Creates a data depedent prior for p-dimensional multinomial distributions
-using a conjugate prior (eg Dirichlet($\alpha$)) based on 20% of the data.
+using a conjugate prior (eg \eqn{Dirichlet(\alpha)}) based on 20% of the data.
 }
 \references{
 Darnieder, William Francis. Bayesian methods for data-dependent priors.

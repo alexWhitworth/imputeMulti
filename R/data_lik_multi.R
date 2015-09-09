@@ -11,11 +11,15 @@
 
 
 
-
+#' @title Compute MLE estimates for missing multinomial
+#' @description blah blah blah -- update
 #' @param dat A \code{data.frame}. All variables must be factors
 #' @param conj_prior A string specifying the conjugate prior. One of 
 #' \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.
-#' @param alpha The vector of counts $\alpha$ for a $Dir(\alpha)$ prior. Must be specified if 
+#' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
+#' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
+#' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
+#' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.

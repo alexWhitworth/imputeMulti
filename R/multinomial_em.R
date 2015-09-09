@@ -9,7 +9,7 @@
 #' @param enum_comp A \code{data.frame} specifying a vector of all possible observed patterns.
 #' @param conj_prior A string specifying the conjugate prior. One of 
 #' \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.
-#' @param alpha The vector of counts $\alpha$ for a $Dir(\alpha)$ prior. Must be specified if 
+#' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param tol A scalar specifying the convergence criteria. Defaults to \code{1e-8}
@@ -62,11 +62,13 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   # 02. E and M Steps
   #----------------------------------------------
   iter <- 0
-  log_lik <- 0
   while (iter < max_iter) {
     # E Step
+    log_lik <- 0
     enum_comp$counts <- 0
     for (y in 1:nrow(enum_comp)) {
+      if (iter >= 1 & enum_comp$theta_y[y] == 0) next     ## if random / structural 0, then skip
+      
       # which missing patterns marginally-match complete pattern y?
       miss_ind <- marg_comp_compare(marg= z_Os_y[, -z_p], complete= enum_comp[y, 1:count_p],
                                   marg_to_comp= FALSE)
@@ -75,7 +77,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
           enum_comp$counts[y] <- x_y$counts[which(rownames(x_y) == y)]
           log_lik <- log_lik + x_y$counts[which(rownames(x_y) == y)] * 
             log(enum_comp$theta_y[which(rownames(x_y) == y)])
-        } else {
+        } else { # random / structural 0
           enum_comp$counts[y] <- 0
         }
         
@@ -84,18 +86,21 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
         # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
         
         E_Xsy_Zy_theta <- vector(mode= "numeric", length= length(miss_ind))
-        for (i in 1:length(miss_ind)) {
-          comp_ind <- marg_comp_compare(z_Os_y[i, -z_p], enum_comp[, 1:count_p], 
-                                        marg_to_comp= TRUE) # pattern match to complete
-          b_Os_y <- sum(enum_comp$theta_y[comp_ind])
-          E_Xsy_Zy_theta[i] <- z_Os_y$counts[miss_ind[i]] * enum_comp$theta_y[y] / b_Os_y # normalize
-          log_lik <- log_lik + z_Os_y$counts[miss_ind[i]] * log(b_Os_y)
+        if (length(miss_ind) > 0) {
+          for (i in 1:length(miss_ind)) {
+            comp_ind <- marg_comp_compare(z_Os_y[miss_ind[i], -z_p], enum_comp[, 1:count_p], 
+                                          marg_to_comp= TRUE) # pattern match to complete
+            b_Os_y <- sum(enum_comp$theta_y[comp_ind])
+            E_Xsy_Zy_theta[i] <- z_Os_y$counts[miss_ind[i]] * enum_comp$theta_y[y] / b_Os_y # normalize
+          }
         }
         # expected count = observed + proportional marginally-observed
         if (any(rownames(x_y) == y)) {
           enum_comp$counts[y] <- x_y$counts[which(rownames(x_y) == y)] + sum(E_Xsy_Zy_theta)
+          log_lik <- log_lik + sum(z_Os_y$counts[miss_ind] * log(b_Os_y))
         } else {
           enum_comp$counts[y] <- sum(E_Xsy_Zy_theta)
+          log_lik <- log_lik + sum(z_Os_y$counts[miss_ind] * log(b_Os_y))
         }
       }
     }
@@ -112,19 +117,22 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     # update iteration; print likelihood if verbose
     iter <- iter + 1
     if (verbose) {
-      print(paste("Iteration", iter, ": log-likelihood =", round(log_lik, 6)))
+      print(cat("Iteration", iter, ": log-likelihood =", round(log_lik, 6), "\n supDist =",
+                supDist(enum_comp$theta_y, enum_comp$theta_y1)))
     }
     
   # 03. check to exit
   #----------------------------------------------
     if (supDist(enum_comp$theta_y, enum_comp$theta_y1) < tol) {
       enum_comp$theta_y1 <- NULL
-      return(list(call= mc, iter= iter, mle_cp= NULL, MLEx_y= enum_comp))
+      enum_comp$counts <- NULL
+      return(list(call= mc, iter= iter, cp_mle= NULL, MLEx_y= enum_comp))
     }
     enum_comp$theta_y <- enum_comp$theta_y1
   }
   # 04. if iter >= max_iter, exit
   #----------------------------------------------
   enum_comp$theta_y1 <- NULL
-  return(list(call= mc, iter= iter, mle_cp= NULL, MLEx_y= enum_comp))
+  enum_comp$counts <- NULL
+  return(list(call= mc, iter= iter, cp_mle= NULL, MLEx_y= enum_comp))
 }

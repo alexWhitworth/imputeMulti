@@ -2,6 +2,7 @@
 % Please edit documentation in R/data_lik_multi.R
 \name{data_lik_multi}
 \alias{data_lik_multi}
+\title{Compute MLE estimates for missing multinomial}
 \usage{
 data_lik_multi(dat, conj_prior = c("none", "data.dep", "flat.prior",
   "non.informative", "select"), alpha = NULL, verbose = FALSE)
@@ -12,11 +13,18 @@ data_lik_multi(dat, conj_prior = c("none", "data.dep", "flat.prior",
 \item{conj_prior}{A string specifying the conjugate prior. One of
 \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.}
 
-\item{alpha}{The vector of counts $\alpha$ for a $Dir(\alpha)$ prior. Must be specified if
+\item{alpha}{The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
 as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
 
 \item{verbose}{Logical. If \code{TRUE}, provide verbose output on each iteration.}
+
+\item{alpha}{The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
+\code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
+as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
+}
+\description{
+blah blah blah -- update
 }
 \references{
 Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7.

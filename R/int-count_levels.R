@@ -1,12 +1,12 @@
 #### internal
-# #' @title Count Levels
-# #' @description Given a dataset and a data.frame of comparison patterns, 
-# #' count the number of occurances of each pattern.
-# #' @param dat A \code{data.frame}. All variables must be factors
-# #' @param enum_list A \code{data.frame} consisting of all possible patterns for matching
-# #' with \code{dat}.
-# #' @param hasNA A string. Denotes if \code{dat} has complete data or not. If missing
-# #' then should only observed patterns be counted or should missing patterns be counted?
+# @title Count Levels
+# @description Given a dataset and a data.frame of comparison patterns, 
+# count the number of occurances of each pattern.
+# @param dat A \code{data.frame}. All variables must be factors
+# @param enum_list A \code{data.frame} consisting of all possible patterns for matching
+# with \code{dat}.
+# @param hasNA A string. Denotes if \code{dat} has complete data or not. If missing
+# then should only observed patterns be counted or should missing patterns be counted?
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss")) {
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   
@@ -56,15 +56,15 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
 }
 
 
-#' @description Compare an array with missing values \code{marg} and an array  
-#' with complete values \code{complete}. Return matching indices. Can compare
-#' either marginal-to-complete or complete-to-marginal.
-#' @param marg A two dimensional array with missing values
-#' @param complete A two dimensional array without missing values
-#' @param marg_to_comp Logical. Do you wish to compare marginal values to 
-#' complete values/matches? Defaults to \code{FALSE} ie- complete values compared
-#' to marginal matches.
-#' @return A \code{list} of matches.
+# @description Compare an array with missing values \code{marg} and an array  
+# with complete values \code{complete}. Return matching indices. Can compare
+# either marginal-to-complete or complete-to-marginal.
+# @param marg A two dimensional array with missing values
+# @param complete A two dimensional array without missing values
+# @param marg_to_comp Logical. Do you wish to compare marginal values to 
+# complete values/matches? Defaults to \code{FALSE} ie- complete values compared
+# to marginal matches.
+# @return A \code{list} of matches.
 marg_comp_compare <- function(marg, complete, marg_to_comp= FALSE) {
   if (marg_to_comp == FALSE) {
     return(apply(complete, 1, function(comparison) {
