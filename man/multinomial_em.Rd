@@ -31,7 +31,8 @@ to \code{10000}.}
 }
 \value{
 A \code{list} containing the following: (1) The function call; (2) the
-number of iterations; (3) the MLE conjugate prior (if requested); (4) the ML estimates from EM.
+number of iterations; (3) The observed data log likelihood; (4) the MLE conjugate prior
+ (if requested); (5) the ML estimates from EM.
 }
 \description{
 Implement the EM algorithm for multvariate multinomial data given
