@@ -1,6 +1,6 @@
 
-#' @title Compute MLE estimates for missing multinomial
-#' @description blah blah blah -- update
+#' @title Impute Values for missing multinomial values
+#' @description 
 #' @param dat A \code{data.frame}. All variables must be factors
 #' @param conj_prior A string specifying the conjugate prior. One of 
 #' \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.
@@ -15,7 +15,7 @@
 #' CRC press, 1997. 
 #' @seealso \code{\link{expand.grid}}, \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
 #' @export
-data_lik_multi <- function(dat,
+multinomial_impute <- function(dat,
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative", "select"),
                            alpha= NULL, verbose= FALSE) {
   if (!all(apply(dat, 2, is.factor))) {
@@ -66,13 +66,27 @@ data_lik_multi <- function(dat,
   # 03. EM -- get MLE for theta_y
     # NOTE:: need to implement data augmentation option
   #----------------------------------------------
-  # defaults  for tol and max_iter
+  # EM
+  # Use defaults  for tol and max_iter
   mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, n_obs= nrow(dat),
                                     conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
   
+  # Data Augmentation -- TBD
+  
   # 04. Impute missing values 
+    # NOTE:: need to implement data augmentation option
   #----------------------------------------------
+  # EM
   dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y)
+  
+  # Data Augmentation -- TBD
+  
+  #combine:
+  imputed_data <- unique(rbind(dat_comp, dat_miss2))
+  
+  # 05. return
+  #----------------------------------------------
+  
   
 }
 
