@@ -82,3 +82,4 @@ marg_comp_compare <- function(marg, complete, marg_to_comp= FALSE) {
 # sup of L1 distance between x and y
 supDist <- function (x, y) return (max (abs (x - y)))
 
+

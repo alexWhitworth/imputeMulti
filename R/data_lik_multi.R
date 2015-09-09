@@ -1,16 +1,4 @@
 
-
-### functions needed:
-# F1. extract levels {d_j} of all variables (Y_j \in Y), j= 1,..., p --- redundant, use levels() ; done
-# F2. Create named vector of length D = prod_{j=1}^p d_j corresponding to F1 -- use rownames(expand.grid()); done
-# F3. count all instances of P(Y = y); return counts {x_y} to vector from F2; done
-# F4. ID and enumerate all missingness patterns {s: s= 1,..., S}; done
-# F5. For each variable (Y_j), define r_sj -- if Y has missingness pattern s \in [1,S] or not
-# F6. Enumerate O_s(y) = {y_j : r_sj = 1} --> O_s and M_s(y) = {y_j : r_sj = 0} --> M_s
-# F7. For each missingness pattern, count observed Y=y {x_y^(s)} --> z_O(s)y ; done
-
-
-
 #' @title Compute MLE estimates for missing multinomial
 #' @description blah blah blah -- update
 #' @param dat A \code{data.frame}. All variables must be factors
@@ -39,8 +27,6 @@ data_lik_multi <- function(dat,
   if (conj_prior %in% c("data.dep", "flat.prior") & is.null(alpha) ) {
     stop("Please supply argument alpha as prior.")
   }
-  
-  
   
   # 01. initialize: 
   #   enumerate observed and missing patterns
@@ -77,16 +63,18 @@ data_lik_multi <- function(dat,
     stop("Functionality not implemented yet.")
   }
   
-  
-  # 03. E and M Steps
+  # 03. EM -- get MLE for theta_y
+    # NOTE:: need to implement data augmentation option
   #----------------------------------------------
   # defaults  for tol and max_iter
   mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, n_obs= nrow(dat),
                                     conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
   
+  # 04. Impute missing values 
+  #----------------------------------------------
+  dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y)
   
 }
-
 
 
 

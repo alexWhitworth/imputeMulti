@@ -17,7 +17,8 @@
 #' to \code{10000}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
 #' @return A \code{list} containing the following: (1) The function call; (2) the 
-#' number of iterations; (3) the MLE conjugate prior (if requested); (4) the ML estimates from EM.
+#' number of iterations; (3) The observed data log likelihood; (4) the MLE conjugate prior
+#'  (if requested); (5) the ML estimates from EM.
 #' @export
 multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative", "select"), 
