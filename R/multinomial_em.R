@@ -67,16 +67,16 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     log_lik <- 0
     enum_comp$counts <- 0
     for (y in 1:nrow(enum_comp)) {
-      if (iter >= 1 & enum_comp$theta_y[y] == 0) next     ## if random / structural 0, then skip
-      
       # which missing patterns marginally-match complete pattern y?
       miss_ind <- marg_comp_compare(marg= z_Os_y[, -z_p], complete= enum_comp[y, 1:count_p],
                                   marg_to_comp= FALSE)
       if (length(miss_ind) == 0) { # if no missing, all observed
         if (any(rownames(x_y) == y)) {
           enum_comp$counts[y] <- x_y$counts[which(rownames(x_y) == y)]
-          log_lik <- log_lik + x_y$counts[which(rownames(x_y) == y)] * 
-            log(enum_comp$theta_y[which(rownames(x_y) == y)])
+          if (enum_comp$theta_y[which(rownames(x_y) == y)] > 0) { # make sure log-lik not -Inf
+            log_lik <- log_lik + x_y$counts[which(rownames(x_y) == y)] * 
+              log(enum_comp$theta_y[which(rownames(x_y) == y)])
+          }
         } else { # random / structural 0
           enum_comp$counts[y] <- 0
         }
@@ -97,10 +97,14 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
         # expected count = observed + proportional marginally-observed
         if (any(rownames(x_y) == y)) {
           enum_comp$counts[y] <- x_y$counts[which(rownames(x_y) == y)] + sum(E_Xsy_Zy_theta)
-          log_lik <- log_lik + sum(z_Os_y$counts[miss_ind] * log(b_Os_y))
+          if (b_Os_y > 0) {
+            log_lik <- log_lik + sum(z_Os_y$counts[miss_ind] * log(b_Os_y))
+          }
         } else {
           enum_comp$counts[y] <- sum(E_Xsy_Zy_theta)
-          log_lik <- log_lik + sum(z_Os_y$counts[miss_ind] * log(b_Os_y))
+          if (b_Os_y > 0) {
+            log_lik <- log_lik + sum(z_Os_y$counts[miss_ind] * log(b_Os_y))
+          }
         }
       }
     }
@@ -117,8 +121,8 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     # update iteration; print likelihood if verbose
     iter <- iter + 1
     if (verbose) {
-      print(cat("Iteration", iter, ": log-likelihood =", round(log_lik, 6), "\n supDist =",
-                supDist(enum_comp$theta_y, enum_comp$theta_y1)))
+      cat("Iteration", iter, ": log-likelihood =", round(log_lik, 6), "\n Convergence Criteria =",
+                supDist(enum_comp$theta_y, enum_comp$theta_y1), "... \n")
     }
     
   # 03. check to exit
@@ -126,7 +130,13 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     if (supDist(enum_comp$theta_y, enum_comp$theta_y1) < tol) {
       enum_comp$theta_y1 <- NULL
       enum_comp$counts <- NULL
-      return(list(call= mc, iter= iter, cp_mle= NULL, MLEx_y= enum_comp))
+      
+      # update log-lik for prior
+      if (conj_prior != "none") {
+        log_lik <- log_lik + sum(ifelse(enum_comp$alpha == 0 | enum_comp$theta_y == 0, 0,
+                                        enum_comp$alpha * log(enum_comp$theta_y)))
+      }
+      return(list(call= mc, iter= iter, log_lik= log_lik, cp_mle= NULL, MLEx_y= enum_comp))
     }
     enum_comp$theta_y <- enum_comp$theta_y1
   }
@@ -134,5 +144,11 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   #----------------------------------------------
   enum_comp$theta_y1 <- NULL
   enum_comp$counts <- NULL
-  return(list(call= mc, iter= iter, cp_mle= NULL, MLEx_y= enum_comp))
+  
+  # update log-lik for prior
+  if (conj_prior != "none") {
+    log_lik <- log_lik + sum(ifelse(enum_comp$alpha == 0 | enum_comp$theta_y == 0, 0,
+                                    enum_comp$alpha * log(enum_comp$theta_y)))
+  }
+  return(list(call= mc, iter= iter, log_lik= log_lik, cp_mle= NULL, MLEx_y= enum_comp))
 }
