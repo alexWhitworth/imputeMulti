@@ -5,7 +5,7 @@
 \title{Impute Values for missing multinomial values}
 \usage{
 multinomial_impute(dat, method = c("EM", "DA"), conj_prior = c("none",
-  "data.dep", "flat.prior", "non.informative", "select"), alpha = NULL,
+  "data.dep", "flat.prior", "non.informative"), alpha = NULL,
   verbose = FALSE)
 }
 \arguments{
@@ -14,7 +14,7 @@ multinomial_impute(dat, method = c("EM", "DA"), conj_prior = c("none",
 \item{method}{\code{c("EM", "DA")} A string specifying EM or Data Augmentation (DA)}
 
 \item{conj_prior}{A string specifying the conjugate prior. One of
-\code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.}
+\code{c("none", "data.dep", "flat.prior", "non.informative")}.}
 
 \item{alpha}{The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify

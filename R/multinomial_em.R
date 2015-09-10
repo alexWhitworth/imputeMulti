@@ -2,7 +2,7 @@
 
 #' @title EM algorithm for multinomial data
 #' @description Implement the EM algorithm for multvariate multinomial data given
-#' observed counts of complete and missing data (Y_obs and Y_mis). Allows for specification
+#' observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for specification
 #' of a Dirichlet conjugate prior.
 #' @param x_y A \code{data.frame} of observed counts for complete observations.
 #' @param z_Os_y A \code{data.frame} of observed marginal-counts for incomplete observations.

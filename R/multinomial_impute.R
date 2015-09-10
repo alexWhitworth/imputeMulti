@@ -84,17 +84,9 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   }
   
   # 04. Impute missing values 
-    # NOTE:: need to implement data augmentation option
   #----------------------------------------------
-  # EM
-  if (method == "EM") {
-    dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y, method= "EM")
-  }
-  
-  # Data Augmentation
-  else if (method == "DA") {
-    dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y, method= "DA")
-  }
+  # EM & DA
+  dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y)
   
   #combine:
   imputed_data <- unique(rbind(dat_comp, dat_miss2))

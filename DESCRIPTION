@@ -1,9 +1,9 @@
 Package: imputeMulti
 Title: Imputation methods for multivariate multinomial data
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person("Alex", "Whitworth", email = "whitworth.alex@gmail.com", role = c("aut", "cre"))
 Description: Implements imputation methods using EM and Data Augmentation following the
-  work of Schafer 1997. Note Data Augmentation methods not implemented in v0.0.1
+  work of Schafer 1997.
 Depends: R (>= 3.2.1)
 Imports: gtools (>= 3.3)
 License: GPL 3

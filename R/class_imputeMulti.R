@@ -27,12 +27,54 @@ setClass("mod_imputeMulti",
          validity= function(obj) {
            if (!obj@method %in% c("EM", "DA", NULL)) {
              return("Currently only EM and DA methods are defined.")
-           } else if (obj@iter < 0) {
+           } else if (obj@mle_iter < 0) {
              return("A negative iteration was given.")
            }
            return(TRUE)
          }
 )
+
+
+###########################################################
+## Methods
+###########################################################
+## Print
+print.mod_imputeMulti <- function(obj) {
+  cat("\n Call: \n", paste(deparse(obj@mle_call)),
+      "\n Method: ", obj@method,
+      "\n\n Iterations: ", obj@mle_iter,
+      "\n\n Log-Likelihood: ", obj@mle_log_lik)
+}
+
+setGeneric("print",
+           def= function(obj) {
+             standardGeneric("print.mod_imputeMulti")
+           })
+
+
+setMethod("print", signature= "mod_imputeMulti",
+          function(obj) {
+            print.mod_imputeMulti(obj)
+          })
+
+
+## Summary
+summary.mod_imputeMulti <- function(obj) {
+  print(obj)
+  
+  summary(obj@mle_x_y[, c("alpha", "theta_y")])
+}
+
+
+setGeneric("summary", 
+           def= function(obj) {
+             standardGeneric("summary")
+           })
+
+setMethod("summary", signature= "mod_imputeMulti",
+          function(obj) {
+            summary.mod_imputeMulti(obj)
+          })
 
 
 #' Class "imputeMulti" 
@@ -68,51 +110,42 @@ setClass("imputeMulti",
 ###########################################################
 ## Methods
 ###########################################################
-
 ## Print
+print.imputeMulti <- function(obj) {
+  cat("\n Global Call: \n", paste(deparse(obj@Gcall)),
+      "\n Call: \n", paste(deparse(obj@mle_call)),
+      "\n Method: ", obj@method,
+      "\n\n Iterations: ", obj@mle_iter,
+      "\n\n Log-Likelihood: ", obj@mle_log_lik,
+      "\n Number Missing: ", obj@nmiss)
+}
+
 setGeneric("print",
            def= function(obj) {
-             standardGeneric("print")
+             standardGeneric("print.imputeMulti")
            })
-
-
-setMethod("print", signature= "mod_imputeMulti",
-  function(obj) {
-    cat("\n Call: \n", paste(deparse(obj@mle_call)),
-        "\n Method: \n", obj@method,
-        "\n\n Iterations: ", obj@mle_iter,
-        "\n\n Log-Likelihood: ", obj@mle_log_lik)
-  })
 
 
 setMethod("print", signature= "imputeMulti",
   function(obj) {
-    cat("\n Global Call: \n", paste(deparse(obj@Gcall)),
-        "\n Call: \n", paste(deparse(obj@mle_call)),
-        "\n Method: \n", obj@method,
-        "\n\n Iterations: ", obj@mle_iter,
-        "\n\n Log-Likelihood: ", obj@mle_log_lik,
-        "\n Number Missing: \n", obj@nmiss)
+    print.imputeMulti(obj)
   })
 
 ## Summary
+summary.imputeMulti <- function(obj) {
+  print(obj)
+  
+  summary(obj@mle_x_y[, c("alpha", "theta_y")])
+  
+  lapply(obj@data, dim)
+}
+
 setGeneric("summary", 
            def= function(obj) {
              standardGeneric("summary")
            })
 
-setMethod("summary", signature= "mod_imputeMulti",
-  function(obj) {
-    print(obj)
-    
-    summary(obj@mle_x_y[, c("alpha", "theta_y")])
-  })
-
 setMethod("summary", signature= "imputeMulti",
   function(obj) {
-    print(obj)
-    
-    summary(obj@mle_x_y[, c("alpha", "theta_y")])
-    
-    lapply(obj@data, dim)
+    summary.imputeMulti(obj)
   })

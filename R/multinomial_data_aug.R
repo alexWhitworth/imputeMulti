@@ -2,7 +2,7 @@
 
 #' @title Data Augmentation algorithm for multinomial data
 #' @description Implement the Data Augmentation algorithm for multvariate multinomial data given
-#' observed counts of complete and missing data (Y_obs and Y_mis). Allows for specification
+#' observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for specification
 #' of a Dirichlet conjugate prior. 
 #' @param x_y A \code{data.frame} of observed counts for complete observations.
 #' @param z_Os_y A \code{data.frame} of observed marginal-counts for incomplete observations.
@@ -27,6 +27,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
                                  conj_prior= c("none", "data.dep", "flat.prior", "non.informative"), 
                                  alpha= NULL, tol= 1e-8, burnin= 500, post_draws= 1000, max_iter= 10000,
                                  verbose= FALSE) {
+  require(gtools)
   # check some errors
   conj_prior <- match.arg(conj_prior, several.ok= FALSE)
   if (conj_prior %in% c("data.dep", "flat.prior") & is.null(alpha) ) {
@@ -93,7 +94,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
                                           marg_to_comp= TRUE) # pattern match to complete
             b_Os_y <- sum(enum_comp$theta_y[comp_ind])
             E_Xsy_Zy_theta[i] <- rmultinom(1, size= z_Os_y$counts[miss_ind[i]], 
-                                           prob= enum_comp$theta_y[y] / b_Os_y) # normalized probability
+                                           prob= enum_comp$theta_y[comp_ind] / b_Os_y) # normalized probability
           }
         }
         # expected count = observed + random draw from multinomial based on marginally-observed
@@ -186,7 +187,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
   }
   
   mod <- new("mod_imputeMulti",
-             method= "EM",
+             method= "DA",
              mle_call= mc,
              mle_iter= iter,
              mle_log_lik= log_lik,
