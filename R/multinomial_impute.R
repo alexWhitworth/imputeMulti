@@ -5,7 +5,7 @@
 #' @param dat A \code{data.frame}. All variables must be factors.
 #' @param method \code{c("EM", "DA")} A string specifying EM or Data Augmentation (DA)
 #' @param conj_prior A string specifying the conjugate prior. One of 
-#' \code{c("none", "data.dep", "flat.prior", "non.informative", "select")}.
+#' \code{c("none", "data.dep", "flat.prior", "non.informative")}.
 #' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
@@ -18,7 +18,7 @@
 #' @seealso \code{\link{expand.grid}}, \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
 #' @export
 multinomial_impute <- function(dat, method= c("EM", "DA"),
-                           conj_prior= c("none", "data.dep", "flat.prior", "non.informative", "select"),
+                           conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
                            alpha= NULL, verbose= FALSE) {
   if (!all(apply(dat, 2, is.factor))) {
     # enforce factor variables
@@ -62,9 +62,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
     }
     alpha <- alpha
   } else if (conj_prior == "non.informative") {
-    enum_comp$alpha <- 1
-  } else if (conj_prior == "select") {
-    stop("Functionality not implemented yet.")
+    alpha <- 1
   }
   
   # 03. EM -- get MLE for theta_y
@@ -72,23 +70,31 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   #----------------------------------------------
   # EM
   if (method == "EM") {
-  # Use defaults  for tol and max_iter
-  mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
-                                    n_obs= nrow(dat),
-                                    conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
+    # Use defaults  for tol and max_iter
+    mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                      n_obs= nrow(dat),
+                                      conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
   }
-  # Data Augmentation -- TBD
-#   else if (method == "DA") {
-#     
-#   }
+  # Data Augmentation
+  else if (method == "DA") {
+    # Use defaults for tol, max_iter, burnin, post_draws
+    mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                            n_obs= nrow(dat),
+                                            conj_prior= conj_prior, alpha= alpha, verbose= verbose)     
+  }
   
   # 04. Impute missing values 
     # NOTE:: need to implement data augmentation option
   #----------------------------------------------
   # EM
-  dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y)
+  if (method == "EM") {
+    dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y, method= "EM")
+  }
   
-  # Data Augmentation -- TBD
+  # Data Augmentation
+  else if (method == "DA") {
+    dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$MLEx_y, method= "DA")
+  }
   
   #combine:
   imputed_data <- unique(rbind(dat_comp, dat_miss2))

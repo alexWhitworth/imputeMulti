@@ -6,8 +6,11 @@
 # @param row_ind A vector of integers corresponding to the row indices of \code{MLEx_y}
 # which match the missing values for \code{miss_val}.
 # @param MLEx_y A \code{data.frame} returned from \code{\link{multinomial_em}}
+# @param method A string. In \code{c("EM", "DA")}
 # @return A complete observation \eqn{X} (ie-without missing values).
-impute_multinomial <- function(miss_val, row_ind, MLEx_y) {
+impute_multinomial <- function(miss_val, row_ind, MLEx_y, method= c("EM", "DA")) {
+  method <- match.arg(method, several.ok = FALSE)
+  
   ml_vals <- MLEx_y[row_ind,]
   ml_vals <- ml_vals[ml_vals$theta_y == max(ml_vals$theta_y),]
   
@@ -22,12 +25,15 @@ impute_multinomial <- function(miss_val, row_ind, MLEx_y) {
 
 # this provides a wrapper to \code{\link{impute_multinomial}} above such 
 # that all missing values are imputed.
-impute_multinomial_all <- function(dat_miss, MLEx_y) {
+impute_multinomial_all <- function(dat_miss, MLEx_y, method= c("EM", "DA")) {
+  method <- match.arg(method, several.ok = FALSE)
+  
   key_cols <- ncol(MLEx_y) - 3
   marg_ind <- marg_comp_compare(dat_miss, MLEx_y[, 1:key_cols], marg_to_comp= TRUE)
   
   for (i in 1:nrow(dat_miss)) {
-    dat_miss[i,] <- impute_multinomial(dat_miss[i,], row_ind= marg_ind[[i]], MLEx_y= MLEx_y)
+    dat_miss[i,] <- impute_multinomial(dat_miss[i,], row_ind= marg_ind[[i]], MLEx_y= MLEx_y,
+                                       method= method)
   }
   
   return(dat_miss)

@@ -1,5 +1,20 @@
 
-
+#' Class "mod_imputeMulti"
+#'  
+#' @name mod_imputeMulti-class
+#' @description A multivariate multinomial model imputed by EM or Data Augmentation is 
+#' represented as a \code{\linkS4class{mod_imputeMulti}} object. A complete 
+#' dataset and model is represented as an \code{\linkS4class{imputeMulti}} object.
+#' Slots for \code{mod_imputeMulti} objects include: (1) the modeling method; 
+#' (2) the call to the estimation function; (3) the number of iterations in estimation;
+#' (4) the final log-likelihood; (5) the conjugate prior if any; (6) the MLE estimate of
+#' the sufficient statistics and parameters.
+#' @docType class
+#' @section Objects from the class: Objects are created by calls to
+#' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
+#' \code{\link{multinomial_data_aug}}.
+#' @seealso \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
+#' \code{\link{multinomial_data_aug}}
 #' @export
 setClass("mod_imputeMulti",
          representation= list(
@@ -20,12 +35,15 @@ setClass("mod_imputeMulti",
 )
 
 
-#' Class "imputeMulti" of imputed multinomial data
+#' Class "imputeMulti" 
 #'  
 #' @name imputeMulti-class
 #' @description A multivariate multinomial model imputed by EM or Data Augmentation is 
 #' represented as a \code{\linkS4class{mod_imputeMulti}} object. A complete 
 #' dataset and model is represented as an \code{\linkS4class{imputeMulti}} object.
+#' Inherits from \code{mod_imputeMulti}. Additional slots are supplied for (1) the
+#' call to \code{multinomial_impute}; (2) the complete, missing, and imputed data;
+#' and (3) the number of observations with missing values.
 #' @docType class
 #' @section Objects from the class: Objects are created by calls to
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
