@@ -1,8 +1,9 @@
 Package: imputeMulti
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph)
+Title: Imputation methods for multivariate multinomial data
+Version: 0.0.1
+Authors@R: person("Alex", "Whitworth", email = "whitworth.alex@gmail.com", role = c("aut", "cre"))
+Description: Implements imputation methods using EM and Data Augmentation following the
+  work of Schafer 1997. Note Data Augmentation methods not implemented in v0.0.1
 Depends: R (>= 3.2.1)
-License: What license is it under?
+License: GPL 3
 LazyData: true

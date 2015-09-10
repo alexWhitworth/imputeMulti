@@ -126,30 +126,47 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                 supDist(enum_comp$theta_y, enum_comp$theta_y1), "... \n")
     }
     
-  # 03. check to exit
+  # 03. check convergence to exit and return
   #----------------------------------------------
     if (supDist(enum_comp$theta_y, enum_comp$theta_y1) < tol) {
-      enum_comp$theta_y1 <- NULL
-      enum_comp$counts <- NULL
-      
       # update log-lik for prior
       if (conj_prior != "none") {
         log_lik <- log_lik + sum(ifelse(enum_comp$alpha == 0 | enum_comp$theta_y == 0, 0,
                                         enum_comp$alpha * log(enum_comp$theta_y)))
       }
-      return(list(call= mc, iter= iter, log_lik= log_lik, cp_mle= NULL, MLEx_y= enum_comp))
-    }
+      enum_comp$theta_y1 <- NULL
+      enum_comp$counts <- NULL
+      
+      mod <- new("mod_imputeMulti",
+                 method= "EM",
+                 mle_call= mc,
+                 mle_iter= iter,
+                 mle_log_lik= log_lik,
+                 mle_cp= NULL,
+                 mle_x_y= enum_comp)
+      
+      return(mod)
+    } else {
     enum_comp$theta_y <- enum_comp$theta_y1
+    }
   }
   # 04. if iter >= max_iter, exit
   #----------------------------------------------
-  enum_comp$theta_y1 <- NULL
-  enum_comp$counts <- NULL
-  
   # update log-lik for prior
   if (conj_prior != "none") {
     log_lik <- log_lik + sum(ifelse(enum_comp$alpha == 0 | enum_comp$theta_y == 0, 0,
                                     enum_comp$alpha * log(enum_comp$theta_y)))
   }
-  return(list(call= mc, iter= iter, log_lik= log_lik, cp_mle= NULL, MLEx_y= enum_comp))
+  enum_comp$theta_y1 <- NULL
+  enum_comp$counts <- NULL
+  
+  mod <- new("mod_imputeMulti",
+             method= "EM",
+             mle_call= mc,
+             mle_iter= iter,
+             mle_log_lik= log_lik,
+             mle_cp= NULL,
+             mle_x_y= enum_comp)
+  
+  return(mod)
 }
