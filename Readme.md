@@ -12,7 +12,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 - Imputation of the observation level data is done via MLE
 - allows for the following priors:
 ```
-\code{c("none", "data.dep", "flat.prior", "non.informative")}
+c("none", "data.dep", "flat.prior", "non.informative")
 ```
 - If data dependent priors are chosen, calculated from approximately 20% of the observations data (assuming 20% of data are complete cases). If less than 20% of data are complete cases, all complete cases are used.
 
