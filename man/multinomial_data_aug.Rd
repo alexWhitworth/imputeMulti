@@ -5,7 +5,7 @@
 \title{Data Augmentation algorithm for multinomial data}
 \usage{
 multinomial_data_aug(x_y, z_Os_y, enum_comp, n_obs, conj_prior = c("none",
-  "data.dep", "flat.prior", "non.informative"), alpha = NULL, tol = 1e-08,
+  "data.dep", "flat.prior", "non.informative"), alpha = NULL, tol = 5e-07,
   burnin = 500, post_draws = 1000, max_iter = 10000, verbose = FALSE)
 }
 \arguments{
@@ -22,7 +22,7 @@ multinomial_data_aug(x_y, z_Os_y, enum_comp, n_obs, conj_prior = c("none",
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
 as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
 
-\item{tol}{A scalar specifying the convergence criteria. Defaults to \code{1e-8}}
+\item{tol}{A scalar specifying the convergence criteria. Defaults to \code{5e-7}}
 
 \item{burnin}{A scalar specifying the number of iterations to use as a burnin. Defaults
 to \code{500}.}
@@ -40,7 +40,7 @@ An object of class \code{mod_imputeMulti}.
 }
 \description{
 Implement the Data Augmentation algorithm for multvariate multinomial data given
-observed counts of complete and missing data (Y_obs and Y_mis). Allows for specification
+observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for specification
 of a Dirichlet conjugate prior.
 }
 \seealso{

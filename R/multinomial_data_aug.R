@@ -12,7 +12,7 @@
 #' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
-#' @param tol A scalar specifying the convergence criteria. Defaults to \code{1e-8}
+#' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
 #' @param burnin A scalar specifying the number of iterations to use as a burnin. Defaults 
 #' to \code{500}.
 #' @param post_draws An integer specifying the number of draws from the posterior distribution.
@@ -25,7 +25,7 @@
 #' @export
 multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
                                  conj_prior= c("none", "data.dep", "flat.prior", "non.informative"), 
-                                 alpha= NULL, tol= 1e-8, burnin= 500, post_draws= 1000, max_iter= 10000,
+                                 alpha= NULL, tol= 5e-7, burnin= 500, post_draws= 1000, max_iter= 10000,
                                  verbose= FALSE) {
   require(gtools)
   # check some errors
@@ -87,6 +87,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
         # (x_y| z_Os_y, theta) = \sum_s (Xsy|Zsy, gamma)
         # (Xsy|Zy_theta) ~ M(Zsy, gamma)
         
+        # -------this is currently not correct
         E_Xsy_Zy_theta <- vector(mode= "numeric", length= length(miss_ind))
         if (length(miss_ind) > 0) {
           for (i in 1:length(miss_ind)) {

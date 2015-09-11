@@ -6,7 +6,7 @@
 \usage{
 multinomial_impute(dat, method = c("EM", "DA"), conj_prior = c("none",
   "data.dep", "flat.prior", "non.informative"), alpha = NULL,
-  verbose = FALSE)
+  verbose = FALSE, tol = 5e-07)
 }
 \arguments{
 \item{dat}{A \code{data.frame}. All variables must be factors.}
@@ -20,7 +20,10 @@ multinomial_impute(dat, method = c("EM", "DA"), conj_prior = c("none",
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
 as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
 
-\item{verbose}{Logical. If \code{TRUE}, provide verbose output on each iteration.}
+\item{verbose}{Logical. If \code{TRUE}, provide verbose output on each iteration.
+#'}
+
+\item{tol}{A scalar specifying the convergence criteria. Defaults to \code{5e-7}}
 
 \item{alpha}{The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify

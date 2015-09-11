@@ -12,7 +12,7 @@
 #' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
-#' @param tol A scalar specifying the convergence criteria. Defaults to \code{1e-8}
+#' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
 #' @param max_iter An integer specifying the maximum number of allowable iterations. Defaults 
 #' to \code{10000}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
@@ -21,7 +21,7 @@
 #' @export
 multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"), 
-                           alpha= NULL, tol= 1e-8, max_iter= 10000,
+                           alpha= NULL, tol= 5e-7, max_iter= 10000,
                            verbose= FALSE) {
   # check some errors
   conj_prior <- match.arg(conj_prior, several.ok= FALSE)

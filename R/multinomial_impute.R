@@ -13,13 +13,14 @@
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
+#' #' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
 #' @references Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. 
 #' CRC press, 1997. 
 #' @seealso \code{\link{expand.grid}}, \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
 #' @export
 multinomial_impute <- function(dat, method= c("EM", "DA"),
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
-                           alpha= NULL, verbose= FALSE) {
+                           alpha= NULL, verbose= FALSE, tol= 5e-7) {
   if (!all(apply(dat, 2, is.factor))) {
     # enforce factor variables
     dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
@@ -70,17 +71,17 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   #----------------------------------------------
   # EM
   if (method == "EM") {
-    # Use defaults  for tol and max_iter
+    # Use defaults  for max_iter
     mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
-                                      n_obs= nrow(dat),
-                                      conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
+                                      n_obs= nrow(dat), conj_prior= conj_prior, 
+                                      alpha= alpha, verbose= verbose, tol= tol) 
   }
   # Data Augmentation
   else if (method == "DA") {
-    # Use defaults for tol, max_iter, burnin, post_draws
+    # Use defaults for max_iter, burnin, post_draws
     mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
-                                            n_obs= nrow(dat),
-                                            conj_prior= conj_prior, alpha= alpha, verbose= verbose)     
+                                            n_obs= nrow(dat), conj_prior= conj_prior, 
+                                            alpha= alpha, verbose= verbose, tol= tol)     
   }
   
   # 04. Impute missing values 
