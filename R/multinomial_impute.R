@@ -90,7 +90,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial@mle_x_y)
   
   #combine:
-  imputed_data <- unique(rbind(dat_comp, dat_miss2))
+  imputed_data <- rbind(dat_comp, dat_miss2)
   
   # 05. return
   #----------------------------------------------
