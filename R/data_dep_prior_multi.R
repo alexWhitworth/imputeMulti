@@ -27,6 +27,9 @@ data_dep_prior_multi <- function(dat) {
     prior <- count_levels(dat[samp,], enum_list= enum, hasNA= "no")
   }
   
+  prior <- merge(enum, prior, all.x= TRUE, all.y=FALSE)
   names(prior)[ncol(prior)] <- "alpha" # naming convention of dirichlet prior
+  prior$alpha <- ifelse(is.na(prior$alpha), 1, prior$alpha)
+  
   return(prior)
 }

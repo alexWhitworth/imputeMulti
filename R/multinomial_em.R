@@ -40,7 +40,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       if (nrow(alpha) != nrow(enum_comp)) {
         stop("nrow(alpha) must match nrow(enum_comp).")
       }
-      enum_comp <- merge(enum_comp, prior)
+      enum_comp <- merge(enum_comp, alpha)
     } else if (conj_prior == "flat.prior") {
       if (!(is.vector(alpha) & length(alpha) == 1)) {
         stop("Flat priors must be supplied as a scalar.")

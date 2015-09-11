@@ -27,7 +27,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   }
   
   conj_prior <- match.arg(conj_prior, several.ok= FALSE)
-  if (conj_prior %in% c("data.dep", "flat.prior") & is.null(alpha) ) {
+  if (conj_prior %in% c("flat.prior") & is.null(alpha) ) {
     stop("Please supply argument alpha as prior.")
   }
   method <- match.arg(method, several.ok= FALSE)
