@@ -5,8 +5,8 @@
 \title{Data Augmentation algorithm for multinomial data}
 \usage{
 multinomial_data_aug(x_y, z_Os_y, enum_comp, n_obs, conj_prior = c("none",
-  "data.dep", "flat.prior", "non.informative"), alpha = NULL, tol = 5e-07,
-  burnin = 500, post_draws = 1000, max_iter = 10000, verbose = FALSE)
+  "data.dep", "flat.prior", "non.informative"), alpha = NULL, burnin = 500,
+  post_draws = 1000, verbose = FALSE)
 }
 \arguments{
 \item{x_y}{A \code{data.frame} of observed counts for complete observations.}
@@ -22,16 +22,11 @@ multinomial_data_aug(x_y, z_Os_y, enum_comp, n_obs, conj_prior = c("none",
 \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
 as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
 
-\item{tol}{A scalar specifying the convergence criteria. Defaults to \code{5e-7}}
-
 \item{burnin}{A scalar specifying the number of iterations to use as a burnin. Defaults
 to \code{500}.}
 
 \item{post_draws}{An integer specifying the number of draws from the posterior distribution.
 Defaults to \code{1000}.}
-
-\item{max_iter}{An integer specifying the maximum number of allowable iterations. Defaults
-to \code{10000}.}
 
 \item{verbose}{Logical. If \code{TRUE}, provide verbose output on each iteration.}
 }

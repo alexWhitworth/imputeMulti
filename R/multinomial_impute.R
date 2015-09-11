@@ -81,7 +81,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
     # Use defaults for max_iter, burnin, post_draws
     mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                                             n_obs= nrow(dat), conj_prior= conj_prior, 
-                                            alpha= alpha, verbose= verbose, tol= tol)     
+                                            alpha= alpha, verbose= verbose)     
   }
   
   # 04. Impute missing values 
