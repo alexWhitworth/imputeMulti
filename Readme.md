@@ -6,7 +6,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 - Methods are implemented in R. A future version will migrate the core algorithms to C++ / RCPP for performance.
 
 ## Features:
-- Uses S4 classes throughoyut.
+- Uses S4 classes throughout.
 - imputation methods for multivariate multinomial data.
 - Imputation of the summary statistics is done using EM and data augmentation
 - Imputation of the observation level data is done via MLE
