@@ -118,8 +118,6 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
     log_lik <- log_lik + sum(ifelse(enum_comp$alpha == 0 | enum_comp$theta_y == 0, 0,
                                     enum_comp$alpha * log(enum_comp$theta_y)))
   }
-  enum_comp$theta_y1 <- NULL
-  enum_comp$counts <- NULL
   
   if (conj_prior == "none") {
     # in case of random zeros: use non-informative prior
@@ -129,6 +127,9 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
     theta_post <- rdirichlet(n= post_draws, alpha= enum_comp$counts + enum_comp$alpha)
     enum_comp$theta_y <- colMeans(theta_post)
   }
+  
+  enum_comp$theta_y1 <- NULL
+  enum_comp$counts <- NULL
   
   mod <- new("mod_imputeMulti",
              method= "DA",
