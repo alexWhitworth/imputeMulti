@@ -39,26 +39,27 @@ setClass("mod_imputeMulti",
 ## Methods
 ###########################################################
 ## Print
-print.mod_imputeMulti <- function(object) {
-  cat("\n Call: \n", paste(deparse(object@mle_call)),
-      "\n Method: ", object@method,
-      "\n\n Iterations: ", object@mle_iter,
-      "\n\n Log-Likelihood: ", object@mle_log_lik)
-}
-
+#' @export
 setMethod("show", signature= "mod_imputeMulti",
-          print.mod_imputeMulti)
+          def= function(object) {
+            cat("\n Call: \n", paste(deparse(object@mle_call)),
+                "\n Method: ", object@method,
+                "\n\n Iterations: ", object@mle_iter,
+                "\n\n Log-Likelihood: ", object@mle_log_lik)
+          })
 
 
 ## Summary
 setGeneric("summary")
 
+#' @export
 summary.mod_imputeMulti <- function(object) {
   print(object)
   
   summary.data.frame(object@mle_x_y[, c("alpha", "theta_y")])
 }
 
+#' @export
 setMethod("summary", signature="mod_imputeMulti", def=summary.mod_imputeMulti)
 
 
@@ -96,21 +97,21 @@ setClass("imputeMulti",
 ## Methods
 ###########################################################
 ## Print
-print.imputeMulti <- function(object) {
-  cat("\n Global Call: \n", paste(deparse(object@Gcall)),
-      "\n Call: \n", paste(deparse(object@mle_call)),
-      "\n Method: ", object@method,
-      "\n\n Iterations: ", object@mle_iter,
-      "\n\n Log-Likelihood: ", object@mle_log_lik,
-      "\n Number Missing: ", object@nmiss)
-}
-
+#' @export
 setMethod("show", signature= "imputeMulti",
-  print.imputeMulti)
+  def= function(object) {
+    cat("\n Global Call: \n", paste(deparse(object@Gcall)),
+        "\n Call: \n", paste(deparse(object@mle_call)),
+        "\n Method: ", object@method,
+        "\n\n Iterations: ", object@mle_iter,
+        "\n\n Log-Likelihood: ", object@mle_log_lik,
+        "\n Number Missing: ", object@nmiss)
+  })
 
 ## Summary
 setGeneric("summary")
 
+#' @export
 summary.imputeMulti <- function(object) {
   print(object)
   
@@ -119,5 +120,6 @@ summary.imputeMulti <- function(object) {
   lapply(object@data, dim)
 }
 
+#' @export
 setMethod("summary", signature= "imputeMulti",
   summary.imputeMulti)

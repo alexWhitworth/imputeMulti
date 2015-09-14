@@ -5,6 +5,6 @@ Authors@R: person("Alex", "Whitworth", email = "whitworth.alex@gmail.com", role 
 Description: Implements imputation methods using EM and Data Augmentation following the
   work of Schafer 1997.
 Depends: R (>= 3.2.1)
-Imports: gtools (>= 3.3)
+Imports: gtools (>= 3.3), methods
 License: GPL 3
 LazyData: true
