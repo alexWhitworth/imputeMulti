@@ -56,7 +56,12 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
   if (conj_prior == "data.dep") {
-    alpha <- data_dep_prior_multi(dat= dat)
+    if (alpha != NULL & dim(alpha)[1] == nrow(enum_comp) & dim(alpha)[2] == ncol(enum_comp) + 1) {
+      message("Using user-supplied data dependent prior.")
+    } else {
+      alpha <- data_dep_prior_multi(dat= dat)
+      message("Calculating data dependent prior.")
+    }
   } else if (conj_prior == "flat.prior") {
     if (!(is.vector(alpha) & length(alpha) == 1)) {
       stop("Flat priors must be supplied as a scalar.")
@@ -101,8 +106,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
              mle_log_lik= mle_multinomial@mle_log_lik,
              mle_cp= mle_multinomial@mle_cp,
              mle_x_y= mle_multinomial@mle_x_y,
-             data= list(complete_data= dat_comp, missing_data= dat_miss, 
-                         imputed_data= imputed_data),
+             data= list(missing_data= dat_miss, imputed_data= imputed_data),
              nmiss= nrow(dat_miss)
              )
   

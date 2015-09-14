@@ -9,7 +9,7 @@ A multivariate multinomial model imputed by EM or Data Augmentation is
 represented as a \code{\linkS4class{mod_imputeMulti}} object. A complete
 dataset and model is represented as an \code{\linkS4class{imputeMulti}} object.
 Inherits from \code{mod_imputeMulti}. Additional slots are supplied for (1) the
-call to \code{multinomial_impute}; (2) the complete, missing, and imputed data;
+call to \code{multinomial_impute}; (2) the missing and imputed data;
 and (3) the number of observations with missing values.
 }
 \section{Objects from the class}{
