@@ -59,8 +59,8 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
     if (!is.null(alpha)) {
       message("Using user-supplied data dependent prior.")
     } else {
-      alpha <- data_dep_prior_multi(dat= dat)
       message("Calculating data dependent prior.")
+      alpha <- data_dep_prior_multi(dat= dat)
     }
   } else if (conj_prior == "flat.prior") {
     if (!(is.vector(alpha) & length(alpha) == 1)) {
