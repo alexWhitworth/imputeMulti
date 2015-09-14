@@ -56,7 +56,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
   if (conj_prior == "data.dep") {
-    if (alpha != NULL & dim(alpha)[1] == nrow(enum_comp) & dim(alpha)[2] == ncol(enum_comp) + 1) {
+    if (!is.null(alpha)) {
       message("Using user-supplied data dependent prior.")
     } else {
       alpha <- data_dep_prior_multi(dat= dat)
