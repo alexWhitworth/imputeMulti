@@ -52,7 +52,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # complete data sufficient statistics
   x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no") 
   # missing data marginal sufficient statistics
-  z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.obs") 
+  z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss") 
   # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
   if (conj_prior == "data.dep") {

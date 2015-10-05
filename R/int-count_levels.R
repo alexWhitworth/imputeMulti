@@ -5,54 +5,47 @@
 # @param dat A \code{data.frame}. All variables must be factors
 # @param enum_list A \code{data.frame} consisting of all possible patterns for matching
 # with \code{dat}.
-# @param hasNA A string. Denotes if \code{dat} has complete data or not. If missing
-# then should only observed patterns be counted or should missing patterns be counted?
+# @param hasNA A string. Denotes if \code{dat} has complete data or not. 
+  # \code{"no"} - there are no missing values, count observed patterns
+  # \code{"count.obs"} - there are missing values, count the marginally observed patterns
+  # \code{"count.obs"} - there are missing values, count the full observed-and-missing patterns
+# 
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss")) {
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   
   enum_list$counts <- NA
   # get counts
   if(hasNA == "no") {
-    #------------- language agnostic code... R implementation below
-    #     for (i in 1:nrow(enum_list)) {
-    #       enum_list$counts[i] <- sum(apply(dat, 1, function(x, case) all(x == case), 
-    #                                        case= enum_list[i, -ncol(enum_list)]))
-    #     }
-    #-------------
     enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
       sum(apply(dat, 1, function(y, case) all(y == case), case= x))
     }, dat= dat)
     
   } else if (hasNA == "count.obs") {
     dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
-    #-------------language agnostic code... R implementation below
-    #     for (i in 1:nrow(enum_list)) {
-    #       enum_list$counts[i] <- sum(apply(dat, 1, function(x, case) all(x == case, na.rm=TRUE), 
-    #                                        case= enum_list[i, -ncol(enum_list)]))
-    #     }
-    #-------------
+    
     enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
       sum(apply(dat, 1, function(y, case) {
-        all(which(is.na(y)) == which(is.na(case))) & all(y == case, na.rm= TRUE)
-      }, case= x))
+        case_obs <- !any(is.na(case[is.na(y)])) # no NA in case where y is NA 
+        val_eq <- all(y[!is.na(y)] == case[!is.na(y)]) # obs values equal
+        return(all(case_obs, val_eq))
+      }, case= x), na.rm= TRUE)
     }, dat= dat)
   } else if (hasNA == "count.miss") {
     dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
-    #------------- language agnostic code... R implementation below
-    #     for (i in 1:nrow(enum_list)) {
-    #       enum_list$counts[i] <- sum(apply(dat, 1, function(x, case) {
-    #         which(is.na(x)) == which(is.na(case)) && all(x == case, na.rm= TRUE)
-    #       }, case= enum_list[i, -ncol(enum_list)]))
-    #     }
-    #-------------
+    
     enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
       sum(apply(dat, 1, function(y, case) {
-        all(which(is.na(y)) == which(is.na(case))) & all(y == case, na.rm= TRUE)
+        num_na_y <- sum(is.na(y)); num_na_case <- sum(is.na(case))
+        num_na_eq <- num_na_y == num_na_case # same number missing
+        ind_na_eq <- ifelse(num_na_y > 0 & num_na_case > 0, 
+                            all(which(is.na(y)) == which(is.na(case))), num_na_eq) # same indices missing
+        val_eq <- all(y[!is.na(y)] == case[!is.na(y)]) # obs values equal
+        return(all(num_na_eq, ind_na_eq, val_eq))
       }, case= x))
     }, dat= dat)
   }
   options(warn= 0)
-  return(enum_list[enum_list$counts > 0,])
+  return(enum_list[!is.na(enum_list$counts) & enum_list$counts > 0,])
 }
 
 

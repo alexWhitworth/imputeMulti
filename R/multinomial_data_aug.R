@@ -61,7 +61,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
   # 02. I and P Steps
   #----------------------------------------------
   iter <- 0
-  while (iter <= burnin) {
+  while (iter < burnin) {
     # I Step
     log_lik <- log_lik0 <- 0
     enum_comp$counts <- 0

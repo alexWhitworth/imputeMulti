@@ -2,6 +2,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
 ## Release notes:
+- V0.1 unit tests for package written and passed.
 - V0.0.2 includes methods for EM and Data Augmentation
 - Methods are implemented in R. A future version will migrate the core algorithms to C++ / RCPP for performance.
 
