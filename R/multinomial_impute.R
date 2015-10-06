@@ -57,8 +57,10 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   
   if (conj_prior == "data.dep") {
     if (!is.null(alpha)) {
+      if (verbose == TRUE) print("Using user-supplied data dependent prior.")
       message("Using user-supplied data dependent prior.")
     } else {
+      if (verbose == TRUE) print("Calculating data dependent prior.")
       message("Calculating data dependent prior.")
       alpha <- data_dep_prior_multi(dat= dat)
     }
@@ -92,6 +94,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # 04. Impute missing values 
   #----------------------------------------------
   # EM & DA
+  if (verbose) print("Imputing missing observations via MLE results.")
   dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial@mle_x_y)
   
   #combine:
