@@ -44,7 +44,7 @@ test_that("missing value imputation works", {
                           n_obs= nrow(dat), conj_prior= "none", 
                           verbose= FALSE, max_iter= 6) 
   
-  dat_miss2 <- impute_multinomial_all(dat_miss, iter6@mle_x_y)
+  dat_miss2 <- impute_multinomial_all(dat_miss, iter6@mle_x_y, p=ncol(dat))
   imputed_data <- rbind(dat_comp, dat_miss2)
   
   ### tests ###

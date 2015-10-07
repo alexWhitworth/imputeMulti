@@ -95,7 +95,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   #----------------------------------------------
   # EM & DA
   if (verbose) print("Imputing missing observations via MLE results.")
-  dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial@mle_x_y)
+  dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial@mle_x_y, p=p)
   
   #combine:
   imputed_data <- rbind(dat_comp, dat_miss2)
