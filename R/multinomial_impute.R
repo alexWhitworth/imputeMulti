@@ -50,6 +50,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   dat_comp <- dat[complete.cases(dat),]
   dat_miss <- dat[!complete.cases(dat),]
   # complete data sufficient statistics
+  if (verbose == TRUE) print("Calculating observed data sufficient statistics.")
   x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no") 
   # missing data marginal sufficient statistics
   z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss") 
