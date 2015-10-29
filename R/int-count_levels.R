@@ -13,7 +13,7 @@
 # @param leave_cores How many cores do you wish to leave open to other processing?
 # 
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss"),
-                         parallel= TRUE, leave_cores= ifelse(detectCores() <= 4, 1, 2)) {
+                         parallel= TRUE, leave_cores= 1L) {
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   if (parallel == TRUE) {
     if (leave_cores < 0 | leave_cores %% 1 != 0) stop("leave_cores must be an integer >= 0")
@@ -110,8 +110,4 @@ marg_comp_compare <- function(marg, complete, marg_to_comp= FALSE) {
     }))
   }
 }
-
-# sup of L1 distance between x and y
-supDist <- function (x, y) return (max (abs (x - y)))
-
 

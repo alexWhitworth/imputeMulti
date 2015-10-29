@@ -1,4 +1,8 @@
 
+#' @useDynLib imputeMulti
+#' @importFrom Rcpp sourceCpp
+
+
 #' @title Impute Values for missing multinomial values
 #' @description Impute values for multivariate multinomial data using either EM or Data
 #' Augmentation.
