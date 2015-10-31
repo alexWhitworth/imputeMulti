@@ -8,16 +8,18 @@
 # @param hasNA A string. Denotes if \code{dat} has complete data or not. 
   # \code{"no"} - there are no missing values, count observed patterns
   # \code{"count.obs"} - there are missing values, count the marginally observed patterns
-  # \code{"count.obs"} - there are missing values, count the full observed-and-missing patterns
+  # \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
 # @param parallel Logical. Do you wish to parallelize the code? Defaults to \code{TRUE}
 # @param leave_cores How many cores do you wish to leave open to other processing?
 # 
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss"),
                          parallel= TRUE, leave_cores= 1L) {
+  # parameter checking
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   if (parallel == TRUE) {
     if (leave_cores < 0 | leave_cores %% 1 != 0) stop("leave_cores must be an integer >= 0")
   }
+  if (ncol(dat) != ncol(enum_list)) stop("ncol(dat) and ncol(enum_list) must match.")
   
   enum_list$counts <- NA
   # get counts
