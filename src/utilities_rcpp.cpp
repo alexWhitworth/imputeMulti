@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <iostream>
 #include <cmath>
+#include <string>
 
 using namespace Rcpp;
 using namespace std;
