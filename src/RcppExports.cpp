@@ -5,15 +5,15 @@
 
 using namespace Rcpp;
 
-// supDistCpp
-double supDistCpp(NumericVector& x, NumericVector& y);
-RcppExport SEXP imputeMulti_supDistCpp(SEXP xSEXP, SEXP ySEXP) {
+// supDist
+double supDist(NumericVector& x, NumericVector& y);
+RcppExport SEXP imputeMulti_supDist(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type y(ySEXP);
-    __result = Rcpp::wrap(supDistCpp(x, y));
+    __result = Rcpp::wrap(supDist(x, y));
     return __result;
 END_RCPP
 }
@@ -31,14 +31,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // count_compare
-IntegerVector count_compare(IntegerMatrix& x, IntegerMatrix& dat, string& hasNA);
+IntegerVector count_compare(IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA);
 RcppExport SEXP imputeMulti_count_compare(SEXP xSEXP, SEXP datSEXP, SEXP hasNASEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< IntegerMatrix& >::type x(xSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix& >::type dat(datSEXP);
-    Rcpp::traits::input_parameter< string& >::type hasNA(hasNASEXP);
+    Rcpp::traits::input_parameter< std::string& >::type hasNA(hasNASEXP);
     __result = Rcpp::wrap(count_compare(x, dat, hasNA));
     return __result;
 END_RCPP

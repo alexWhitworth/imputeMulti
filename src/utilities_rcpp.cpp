@@ -8,7 +8,7 @@ using namespace std;
 
 //sup of L1 distance between x and y
 // [[Rcpp::export]]
-double supDistCpp (NumericVector& x, NumericVector& y) {
+double supDist (NumericVector& x, NumericVector& y) {
   int nx = x.size();
   int ny = y.size();
   if (nx != ny) {
@@ -93,7 +93,7 @@ List marg_comp_compare (IntegerMatrix& marg, IntegerMatrix& complete, bool marg_
   // \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
 
 // [[Rcpp::export]]
-IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, string& hasNA) {
+IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA) {
   // remember will work with x.ncol() - 1 vs dat.ncol()
 
   IntegerVector out(x.nrow());
