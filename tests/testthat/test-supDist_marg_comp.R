@@ -60,4 +60,18 @@ test_that("marg_compare works correctly", {
   expect_equal(unlist(marg_comp_compare(dat, dat2, TRUE)), 1:10)
   expect_equal(unlist(marg_comp_compare(dat, dat2, FALSE)), 1:10)
   
+  
+  ## make sure works with factor variables
+  dat <- apply(dat, 2, function(x) as.factor(x))
+  dat2 <- apply(dat2, 2, function(x) as.factor(x))
+  
+  expect_equal(unlist(marg_complete_compare(dat, dat, TRUE)), 1:10)
+  expect_equal(unlist(marg_complete_compare(dat, dat, FALSE)), 1:10)
+  expect_equal(unlist(marg_complete_compare(dat2, dat2, TRUE)), 1:10)
+  expect_equal(unlist(marg_complete_compare(dat2, dat2, FALSE)), 1:10)
+  expect_equal(unlist(marg_complete_compare(dat, dat2, TRUE)), 1:10)
+  expect_equal(unlist(marg_complete_compare(dat, dat2, FALSE)), 1:10)
+  
 })
+
+

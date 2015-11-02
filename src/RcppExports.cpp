@@ -5,14 +5,16 @@
 
 using namespace Rcpp;
 
-// which_na
-SEXP which_na(SEXP x);
-RcppExport SEXP imputeMulti_which_na(SEXP xSEXP) {
+// count_compare
+IntegerVector count_compare(IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA);
+RcppExport SEXP imputeMulti_count_compare(SEXP xSEXP, SEXP datSEXP, SEXP hasNASEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
-    __result = Rcpp::wrap(which_na(x));
+    Rcpp::traits::input_parameter< IntegerMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< std::string& >::type hasNA(hasNASEXP);
+    __result = Rcpp::wrap(count_compare(x, dat, hasNA));
     return __result;
 END_RCPP
 }
@@ -41,16 +43,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// count_compare
-IntegerVector count_compare(IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA);
-RcppExport SEXP imputeMulti_count_compare(SEXP xSEXP, SEXP datSEXP, SEXP hasNASEXP) {
+// which_na
+SEXP which_na(SEXP x);
+RcppExport SEXP imputeMulti_which_na(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< IntegerMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix& >::type dat(datSEXP);
-    Rcpp::traits::input_parameter< std::string& >::type hasNA(hasNASEXP);
-    __result = Rcpp::wrap(count_compare(x, dat, hasNA));
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    __result = Rcpp::wrap(which_na(x));
     return __result;
 END_RCPP
 }

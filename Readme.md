@@ -2,7 +2,8 @@ imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
 ## Release notes:
-- **10/29/2015:** v0.2.2 Moving utility functions to Rcpp -- major speed improvements. In development until v0.3. Will migrate core (non-utility functions) to Rcpp for v0.4
+- v0.3 - utility functions have been moved to Rcpp.
+- v0.2.2 Moving utility functions to Rcpp -- major speed improvements. In development until v0.3. Will migrate core (non-utility functions) to Rcpp for v0.4
 - v0.2 Added parallel functionality.
 - v01.2 all unit tests passed, minor debugging.
 - V0.1 unit tests for package written and passed.

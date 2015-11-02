@@ -1,17 +1,17 @@
 #### internal
 # @title Count Levels
-# @description Given a dataset and a data.frame of comparison patterns, 
+# @description Given a dataset and a data.frame of comparison patterns,
 # count the number of occurances of each pattern.
 # @param dat A \code{data.frame}. All variables must be factors
 # @param enum_list A \code{data.frame} consisting of all possible patterns for matching
 # with \code{dat}.
-# @param hasNA A string. Denotes if \code{dat} has complete data or not. 
+# @param hasNA A string. Denotes if \code{dat} has complete data or not.
   # \code{"no"} - there are no missing values, count observed patterns
   # \code{"count.obs"} - there are missing values, count the marginally observed patterns
   # \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
 # @param parallel Logical. Do you wish to parallelize the code? Defaults to \code{TRUE}
 # @param leave_cores How many cores do you wish to leave open to other processing?
-# 
+#
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss"),
                          parallel= TRUE, leave_cores= 1L) {
   # parameter checking
@@ -20,96 +20,44 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     if (leave_cores < 0 | leave_cores %% 1 != 0) stop("leave_cores must be an integer >= 0")
   }
   if (ncol(dat) != ncol(enum_list)) stop("ncol(dat) and ncol(enum_list) must match.")
-  
-  enum_list$counts <- NA
+
+  # convert from factors to integers
+  e2 <- apply(enum_list, 2, as.integer)
+  dat2 <- apply(dat, 2, as.integer)
+
   # get counts
-  if(hasNA == "no") {
-    if (parallel == FALSE) {
-      enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
-        sum(apply(dat, 1, function(y, case) all(y == case), case= x))
-      }, dat= dat)
-    } else {
-      cl <- makeCluster(detectCores() - leave_cores)
-      enum_list$counts <- parRapply(cl, enum_list[, -ncol(enum_list)], function(x, dat) {
-        sum(apply(dat, 1, function(y, case) all(y == case), case= x))
-      }, dat= dat)
-      stopCluster(cl)
-    }
-  } else if (hasNA == "count.obs") {
-    dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
-    
-    if (parallel == FALSE) {
-      enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
-        sum(apply(dat, 1, function(y, case) {
-          case_obs <- !any(is.na(case[is.na(y)])) # no NA in case where y is NA 
-          val_eq <- all(y[!is.na(y)] == case[!is.na(y)]) # obs values equal
-          return(all(case_obs, val_eq))
-        }, case= x), na.rm= TRUE)
-      }, dat= dat)
-    } else {
-      cl <- makeCluster(detectCores() - leave_cores)
-      enum_list$counts <- parRapply(cl, enum_list[, -ncol(enum_list)], function(x, dat) {
-        sum(apply(dat, 1, function(y, case) {
-          case_obs <- !any(is.na(case[is.na(y)])) # no NA in case where y is NA 
-          val_eq <- all(y[!is.na(y)] == case[!is.na(y)]) # obs values equal
-          return(all(case_obs, val_eq))
-        }, case= x), na.rm= TRUE)
-      }, dat= dat)
-      stopCluster(cl)
-    }
-  } else if (hasNA == "count.miss") {
-    dat <- dat[!complete.cases(dat),]; options(warn= -1) # length warnings
-    if (parallel == FALSE) {
-      enum_list$counts <- apply(enum_list[, -ncol(enum_list)], 1, function(x, dat) {
-        sum(apply(dat, 1, function(y, case) {
-          num_na_y <- sum(is.na(y)); num_na_case <- sum(is.na(case))
-          num_na_eq <- num_na_y == num_na_case # same number missing
-          ind_na_eq <- ifelse(num_na_y > 0 & num_na_case > 0, 
-                              all(which(is.na(y)) == which(is.na(case))), num_na_eq) # same indices missing
-          val_eq <- all(y[!is.na(y)] == case[!is.na(y)]) # obs values equal
-          return(all(num_na_eq, ind_na_eq, val_eq))
-        }, case= x))
-      }, dat= dat)
-    } else {
-      cl <- makeCluster(detectCores() - leave_cores)
-      enum_list$counts <- parRapply(cl, enum_list[, -ncol(enum_list)], function(x, dat) {
-        sum(apply(dat, 1, function(y, case) {
-          num_na_y <- sum(is.na(y)); num_na_case <- sum(is.na(case))
-          num_na_eq <- num_na_y == num_na_case # same number missing
-          ind_na_eq <- ifelse(num_na_y > 0 & num_na_case > 0, 
-                              all(which(is.na(y)) == which(is.na(case))), num_na_eq) # same indices missing
-          val_eq <- all(y[!is.na(y)] == case[!is.na(y)]) # obs values equal
-          return(all(num_na_eq, ind_na_eq, val_eq))
-        }, case= x))
-      }, dat= dat)
-      stopCluster(cl)
-    }
+  if (parallel == FALSE) {
+    enum_list$counts <- count_compare(x= e2, dat= dat2, hasNA= hasNA)
+  } else {
+    # resolve edge case when nnodes > nrow(x_missing)
+    nnodes <- min(nrow(enum_list), detectCores() - leave_cores)
+    cl <- makeCluster(nnodes)
+    enum_list$counts <- do.call("c", clusterApply(cl,
+          x= parallel:::splitRows(e2, nnodes), fun= imputeMulti:::count_compare,
+          dat= dat2, hasNA= hasNA))
+    stopCluster(cl)
   }
-  options(warn= 0)
+  # return
   return(enum_list[!is.na(enum_list$counts) & enum_list$counts > 0,])
 }
 
 
-# @description Compare an array with missing values \code{marg} and an array  
+# @description Compare an array with missing values \code{marg} and an array
 # with complete values \code{complete}. Return matching indices. Can compare
 # either marginal-to-complete or complete-to-marginal.
 # @param marg A two dimensional array with missing values
 # @param complete A two dimensional array without missing values
-# @param marg_to_comp Logical. Do you wish to compare marginal values to 
+# @param marg_to_comp Logical. Do you wish to compare marginal values to
 # complete values/matches? Defaults to \code{FALSE} ie- complete values compared
 # to marginal matches.
 # @return A \code{list} of matches.
-marg_comp_compare <- function(marg, complete, marg_to_comp= FALSE) {
-  if (marg_to_comp == FALSE) {
-    return(apply(complete, 1, function(comparison) {
-      which(apply(marg, 1, function(x, comparison) all(x == comparison, na.rm=TRUE), 
-                  comparison= comparison))  
-    }))
-  } else {
-    return(apply(marg, 1, function(comparison) {
-      which(apply(complete, 1, function(x, comparison) all(x == comparison, na.rm=TRUE), 
-                  comparison= comparison))  
-    }))
-  }
+marg_complete_compare <- function(marg, complete, marg_to_complete= FALSE) {
+  ## 0. Pre-processing: convert factors to integers
+  marg <- apply(marg, 2, as.integer)
+  complete <- apply(complete, 2, as.integer)
+
+  ## 1. Run code in C
+  .Call('imputeMulti_marg_comp_compare', PACKAGE = 'imputeMulti',
+        marg, complete, marg_to_complete)
 }
 

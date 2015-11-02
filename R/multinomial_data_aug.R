@@ -70,7 +70,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
       # random allocation of observed marginal counts to complete pattern y
       # (x_y| z_Os_y, theta) = \sum_s (Xsy|Zsy, gamma)
       # (Xsy|Zy_theta) ~ M(Zsy, gamma)
-      comp_ind <- marg_comp_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p], 
+      comp_ind <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p], 
                                     marg_to_comp= TRUE) # pattern match to complete
       
       b_Os_y <- sum(enum_comp$theta_y[comp_ind])

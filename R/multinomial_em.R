@@ -7,20 +7,20 @@
 #' @param x_y A \code{data.frame} of observed counts for complete observations.
 #' @param z_Os_y A \code{data.frame} of observed marginal-counts for incomplete observations.
 #' @param enum_comp A \code{data.frame} specifying a vector of all possible observed patterns.
-#' @param conj_prior A string specifying the conjugate prior. One of 
+#' @param conj_prior A string specifying the conjugate prior. One of
 #' \code{c("none", "data.dep", "flat.prior", "non.informative")}.
-#' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
-#' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
+#' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
+#' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
-#' @param max_iter An integer specifying the maximum number of allowable iterations. Defaults 
+#' @param max_iter An integer specifying the maximum number of allowable iterations. Defaults
 #' to \code{10000}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
 #' @return An object of class \code{mod_imputeMulti}.
 #' @seealso \code{\link{multinomial_data_aug}}, \code{\link{multinomial_impute}}
 #' @export
 multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
-                           conj_prior= c("none", "data.dep", "flat.prior", "non.informative"), 
+                           conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
                            alpha= NULL, tol= 5e-7, max_iter= 10000,
                            verbose= FALSE) {
   # check some errors
@@ -28,11 +28,11 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   if (conj_prior %in% c("data.dep", "flat.prior") & is.null(alpha) ) {
     stop("Please supply argument alpha as prior.")
   }
-  
+
   mc <- match.call()
   z_p <- ncol(z_Os_y)
   count_p <- ncol(enum_comp)
-  
+
   # 01. Merge in prior if supplied; calculate if requested
   #----------------------------------------------
   if (conj_prior != "none") {
@@ -48,14 +48,14 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       enum_comp$alpha <- alpha
     } else if (conj_prior == "non.informative") {
       enum_comp$alpha <- 1
-    } 
+    }
     # calc theta_y from alpha
     enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
   } else {
     enum_comp$theta_y <- runif(nrow(enum_comp))
     enum_comp$theta_y <- enum_comp$theta_y / sum(enum_comp$theta_y)
   }
-  
+
   # 02. E and M Steps
   #----------------------------------------------
   iter <- 0
@@ -63,19 +63,20 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     # E Step
     log_lik <- log_lik0 <- 0
     enum_comp$counts <- 0
-    
-    for (s in 1:nrow(z_Os_y)) { 
+
+    for (s in 1:nrow(z_Os_y)) {
       # allocate observed marginal counts proportionally to complete patterns
       # E(x_y| z_Os_y, theta) = \sum_s [E_Xsy_Zy_theta]
       # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
-      comp_ind <- marg_comp_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p], 
+      comp_ind <- marg_comp_compare(matrix(apply(z_Os_y[s, -z_p], 2, as.integer), nrow= 1),  # fix for Rcpp versions
+                                        as.matrix(apply(enum_comp[, 1:count_p], 2, as.integer)),
                                     marg_to_comp= TRUE) # pattern match to complete
-      
-      b_Os_y <- sum(enum_comp$theta_y[comp_ind])
-      E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[comp_ind] / b_Os_y # normalize
-      
+
+      b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])
+      E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[unlist(comp_ind)] / b_Os_y # normalize
+
       # expected count += proportional marginally-observed
-      enum_comp$counts[comp_ind] <- enum_comp$counts[comp_ind] + E_Xsy_Zy_theta
+      enum_comp$counts[unlist(comp_ind)] <- enum_comp$counts[unlist(comp_ind)] + E_Xsy_Zy_theta
       # update log-lik
       if (b_Os_y > 0) {
         log_lik <- log_lik + z_Os_y$counts[s] * log(b_Os_y)
@@ -86,23 +87,23 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     # update log-lik
     log_lik <- log_lik + sum(ifelse(enum_comp$theta_y[as.integer(rownames(x_y))] == 0, 0,
                     x_y$counts * log(enum_comp$theta_y[as.integer(rownames(x_y))])))
-  
+
     # M Step
     if (conj_prior == "none") {
       enum_comp$theta_y1 <- enum_comp$counts / n_obs
     } else {
       D <- nrow(enum_comp)
       alpha_0 <- sum(enum_comp$alpha)
-      enum_comp$theta_y1 <- (enum_comp$counts + enum_comp$alpha - 1) / (n_obs + alpha_0 - D) 
+      enum_comp$theta_y1 <- (enum_comp$counts + enum_comp$alpha - 1) / (n_obs + alpha_0 - D)
     }
-  
+
     # update iteration; print likelihood if verbose
     iter <- iter + 1
     if (verbose) {
       cat("Iteration", iter, ": log-likelihood =", sprintf("%.10f", log_lik), "\n Convergence Criteria =",
                 sprintf("%.10f", supDist(enum_comp$theta_y, enum_comp$theta_y1)), "... \n")
     }
-    
+
   # 03. check convergence to exit and return
   #----------------------------------------------
     if (supDist(enum_comp$theta_y, enum_comp$theta_y1) < tol |
@@ -114,7 +115,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       }
       enum_comp$theta_y1 <- NULL
       enum_comp$counts <- NULL
-      
+
       mod <- new("mod_imputeMulti",
                  method= "EM",
                  mle_call= mc,
@@ -122,7 +123,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                  mle_log_lik= log_lik,
                  mle_cp= conj_prior,
                  mle_x_y= enum_comp)
-      
+
       return(mod)
     } else {
     enum_comp$theta_y <- enum_comp$theta_y1
@@ -138,7 +139,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   }
   enum_comp$theta_y1 <- NULL
   enum_comp$counts <- NULL
-  
+
   mod <- new("mod_imputeMulti",
              method= "EM",
              mle_call= mc,
@@ -146,6 +147,6 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
              mle_log_lik= log_lik,
              mle_cp= conj_prior,
              mle_x_y= enum_comp)
-  
+
   return(mod)
 }

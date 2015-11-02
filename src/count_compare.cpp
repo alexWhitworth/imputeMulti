@@ -20,10 +20,9 @@ using namespace std;
 
 // [[Rcpp::export]]
 IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA) {
-  // remember will work with x.ncol() - 1 vs dat.ncol()
 
   IntegerVector out(x.nrow());
-  int nr_x = x.nrow(), nr_dat = dat.nrow(), nc_x = (x.ncol() - 1);
+  int nr_x = x.nrow(), nr_dat = dat.nrow(), nc_x = x.ncol();
 
   if (hasNA == "no") {
     for (int i = 0; i < nr_x; i++) {
@@ -60,10 +59,12 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& 
         for (int k = 0; k < nc_x; k++) {
           if (x.row(i)[k] == NA_INTEGER) {
             x_na.push_back(k);
+          } else {
             x_exist.push_back(x.row(i)[k]);
           }
           if (dat.row(j)[k] == NA_INTEGER) {
             dat_na.push_back(k);
+          } else {
             dat_exist.push_back(dat.row(j)[k]);
           }
         }
