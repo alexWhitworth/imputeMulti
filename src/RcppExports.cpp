@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// which_na
+SEXP which_na(SEXP x);
+RcppExport SEXP imputeMulti_which_na(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    __result = Rcpp::wrap(which_na(x));
+    return __result;
+END_RCPP
+}
 // supDist
 double supDist(NumericVector& x, NumericVector& y);
 RcppExport SEXP imputeMulti_supDist(SEXP xSEXP, SEXP ySEXP) {
