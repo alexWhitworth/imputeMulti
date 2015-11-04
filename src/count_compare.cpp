@@ -28,7 +28,10 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& 
     for (int i = 0; i < nr_x; i++) {
         int cnt = 0;
       for (int j = 0; j < nr_dat; j++) {
-        if (is_true(all(x.row(i) == dat.row(j)))) ++cnt;
+        if (is_true(all(x.row(i) == dat.row(j)))) {
+            ++cnt;
+            break; // x.row(i) are unique -- can only have one match
+        }
       }
       out[i] = cnt;
     }
@@ -44,7 +47,10 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& 
             x_exist.push_back(x.row(i)[k]);
           }
         }
-        if (is_true(all(x_exist == dat_exist))) ++cnt;
+        if (is_true(all(x_exist == dat_exist))) {
+            ++cnt;
+            break; // x.row(i) are unique -- can only have one match
+        }
       }
       out[i] = cnt;
     }
@@ -70,8 +76,10 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& 
         }
         // if (same number NA, same positions NA, same values existing) ==> match
         if (x_na.size() == dat_na.size() && is_true(all(x_na == dat_na)) &&
-            is_true(all(x_exist == dat_exist)))
+            is_true(all(x_exist == dat_exist))) {
           ++cnt;
+          break; // x.row(i) are unique -- can only have one match
+        }
       }
       out[i] = cnt;
     }
