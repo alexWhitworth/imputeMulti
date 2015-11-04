@@ -29,12 +29,17 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
   if (parallel == FALSE) {
     enum_list$counts <- count_compare(x= e2, dat= dat2, hasNA= hasNA)
   } else {
-    # resolve edge case when nnodes > nrow(x_missing)
-    nnodes <- min(nrow(enum_list), detectCores() - leave_cores)
+    # resolve edge case when nnodes > nrow(dat2)
+    nnodes <- min(nrow(dat2), detectCores() - leave_cores)
     cl <- makeCluster(nnodes)
-    enum_list$counts <- do.call("c", clusterApply(cl,
-          x= parallel:::splitRows(e2, nnodes), fun= imputeMulti:::count_compare,
-          dat= dat2, hasNA= hasNA))
+    temp <- do.call("cbind", clusterApply(cl,
+          # split data across clusters, share: comparison (e2) and hasNA
+          x= parallel:::splitRows(dat2, nnodes), fun= function(x, e2, hasNA) {
+            return(imputeMulti:::count_compare(x= e2, dat= x, hasNA= hasNA))
+            # wrapper function needed for parameter-name-confusion b/w clusterApply
+            # and count_compare
+          }, e2= e2, hasNA= hasNA))
+    enum_list$counts <- apply(temp, 1, sum)
     stopCluster(cl)
   }
   # return

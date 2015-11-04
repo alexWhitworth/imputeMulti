@@ -21,24 +21,26 @@ using namespace std;
 // [[Rcpp::export]]
 IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA) {
 
-  IntegerVector out(x.nrow());
   int nr_x = x.nrow(), nr_dat = dat.nrow(), nc_x = x.ncol();
+  IntegerVector out(nr_x, 0);
+
+  // Basic strategy: Loop through dat to find match in x. Each j in J has 1 match i in I
+  // Once match is found, break and j++
+  // match criteria differs by hasNA.
+  // many to one matching (many dat.row(j) may match one x.row(i))
 
   if (hasNA == "no") {
-    for (int i = 0; i < nr_x; i++) {
-        int cnt = 0;
-      for (int j = 0; j < nr_dat; j++) {
+    for (int j = 0; j < nr_dat; j++) {
+      for (int i = 0; i < nr_x; i++) {
         if (is_true(all(x.row(i) == dat.row(j)))) {
-            ++cnt;
+            ++out[i];
             break; // x.row(i) are unique -- can only have one match
         }
       }
-      out[i] = cnt;
     }
   } else if (hasNA == "count.obs") {
-    for (int i = 0; i < nr_x; i++) {
-        int cnt = 0;
-      for (int j = 0; j < nr_dat; j++) {
+    for (int j = 0; j < nr_dat; j++) {
+      for (int i = 0; i < nr_x; i++) {
         // find observed values. Observed values in dat(j,) must match same values in x(i,)
         IntegerVector x_exist, dat_exist;
         for (int k = 0; k < nc_x; k++) {
@@ -48,16 +50,14 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& 
           }
         }
         if (is_true(all(x_exist == dat_exist))) {
-            ++cnt;
+            ++out[i];
             break; // x.row(i) are unique -- can only have one match
         }
       }
-      out[i] = cnt;
     }
   } else if (hasNA == "count.miss") {
-    for (int i = 0; i < nr_x; i++) {
-        int cnt = 0;
-      for (int j = 0; j < nr_dat; j++) {
+    for (int j = 0; j < nr_dat; j++) {
+      for (int i = 0; i < nr_x; i++) {
         // find NA values
         // split both rows into two vectors: one of indices of missing values and one of observed values
         // both must match for equivalence
@@ -77,14 +77,12 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& 
         // if (same number NA, same positions NA, same values existing) ==> match
         if (x_na.size() == dat_na.size() && is_true(all(x_na == dat_na)) &&
             is_true(all(x_exist == dat_exist))) {
-          ++cnt;
+          ++out[i];
           break; // x.row(i) are unique -- can only have one match
         }
       }
-      out[i] = cnt;
     }
-  }
-  else {
+  } else {
     cout << "ERROR: hasNA improperly specified" << endl;
     return -1;
   }
