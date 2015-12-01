@@ -23,6 +23,7 @@ impute_multinomial <- function(miss_val, row_ind, MLEx_y) {
 # this provides a wrapper to \code{\link{impute_multinomial}} above such 
 # that all missing values are imputed.
 impute_multinomial_all <- function(dat_miss, MLEx_y, p) {
+  gc()
   marg_ind <- marg_complete_compare(dat_miss, MLEx_y[, 1:p], marg_to_comp= TRUE)
   
   for (i in 1:nrow(dat_miss)) {
