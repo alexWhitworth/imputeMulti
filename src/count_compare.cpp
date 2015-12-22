@@ -19,7 +19,7 @@ using namespace std;
   // \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
 
 // [[Rcpp::export]]
-IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, std::string& hasNA) {
+IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, const std::string& hasNA) {
 
   int nr_x = x.nrow(), nr_dat = dat.nrow(), nc_x = x.ncol();
   IntegerVector out(nr_x, 0);

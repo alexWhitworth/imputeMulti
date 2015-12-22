@@ -31,7 +31,10 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
   } else {
     # resolve edge case when nnodes > nrow(dat2)
     nnodes <- min(nrow(dat2), detectCores() - leave_cores)
-    cl <- makeCluster(nnodes)
+    
+    if (grepl("Windows", sessionInfo()$running)) {cl <- makeCluster(nnodes, type= "PSOCK")}
+    else {cl <- makeCluster(nnodes, type= "FORK")}
+    
     temp <- do.call("cbind", clusterApply(cl,
           # split data across clusters, share: comparison (e2) and hasNA
           x= parallel:::splitRows(dat2, nnodes), fun= function(x, e2, hasNA) {

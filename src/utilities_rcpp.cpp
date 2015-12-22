@@ -8,7 +8,7 @@ using namespace std;
 
 //sup of L1 distance between x and y
 // [[Rcpp::export]]
-double supDist (NumericVector& x, NumericVector& y) {
+double supDist (const NumericVector& x, const NumericVector& y) {
   int nx = x.size();
   int ny = y.size();
   if (nx != ny) {
@@ -33,7 +33,7 @@ double supDist (NumericVector& x, NumericVector& y) {
 // to marginal matches.
 // @return A \code{list} of matches.
 // [[Rcpp::export]]
-List marg_comp_compare (IntegerMatrix& marg, IntegerMatrix& complete, bool marg_to_complete= false) {
+List marg_comp_compare (IntegerMatrix& marg, IntegerMatrix& complete, const bool marg_to_complete= false) {
   int ncol_m = marg.ncol(), ncol_c = complete.ncol();
   if (ncol_m != ncol_c) {
     cout << "ERROR: ncol of marg and complete do not match." << endl;
