@@ -60,13 +60,23 @@ test_that("marg_compare works correctly", {
   expect_equal(unlist(marg_comp_compare(dat, dat2, TRUE)), 1:10)
   expect_equal(unlist(marg_comp_compare(dat, dat2, FALSE)), 1:10)
   
+  set.seed(125)
+  dat2 <- data.frame(x1= factor(sample(1:5, size=10, replace= TRUE)),
+                     x2= factor(sample(6:10, size=10, replace= TRUE)),
+                     x3= factor(sample(11:15, size=10, replace= TRUE)),
+                     x4= factor(sample(16:20, size=10, replace= TRUE)),
+                     x5= factor(sample(21:26, size=10, replace= TRUE)))
   
-  ## make sure works with factor variables
-  dat <- apply(dat, 2, function(x) as.factor(x))
-  dat2 <- apply(dat2, 2, function(x) as.factor(x))
+  # insert missing values
+  dat <- dat2
+  dat[c(3,7),1] <- NA
+  dat[c(1,5),2] <- NA
+  dat[c(2,6),3] <- NA
+  dat[c(7,9),4] <- NA
+  dat[c(4,10),5] <- NA
   
-  expect_equal(unlist(marg_complete_compare(dat, dat, TRUE)), 1:10)
-  expect_equal(unlist(marg_complete_compare(dat, dat, FALSE)), 1:10)
+  expect_equal(unlist(marg_complete_compare(dat, dat, TRUE)), c(1:10,9,10))
+  expect_equal(unlist(marg_complete_compare(dat, dat, FALSE)), c(1:10,9,10))
   expect_equal(unlist(marg_complete_compare(dat2, dat2, TRUE)), 1:10)
   expect_equal(unlist(marg_complete_compare(dat2, dat2, FALSE)), 1:10)
   expect_equal(unlist(marg_complete_compare(dat, dat2, TRUE)), 1:10)

@@ -32,3 +32,4 @@ impute_multinomial_all <- function(dat_miss, MLEx_y, p) {
   
   return(dat_miss)
 }
+

@@ -1,3 +1,13 @@
+
+
+# convert a factor-vector to an integer vector, where the integers correspond
+# to the levels of the factor.
+fact_to_int <- function(f) {
+  l <- levels(f)
+  return(unlist(sapply(f, function(i) {
+    ifelse(is.na(i), NA, which(i == l))})))
+}
+
 #### internal
 # @title Count Levels
 # @description Given a dataset and a data.frame of comparison patterns,
@@ -22,8 +32,8 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
   if (ncol(dat) != ncol(enum_list)) stop("ncol(dat) and ncol(enum_list) must match.")
 
   # convert from factors to integers
-  e2 <- apply(enum_list, 2, as.integer)
-  dat2 <- apply(dat, 2, as.integer)
+  e2 <- do.call("cbind", lapply(enum_list, fact_to_int))
+  dat2 <- do.call("cbind", lapply(dat, fact_to_int))
 
   # get counts
   if (parallel == FALSE) {
@@ -61,8 +71,8 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
 # @return A \code{list} of matches.
 marg_complete_compare <- function(marg, complete, marg_to_complete= FALSE) {
   ## 0. Pre-processing: convert factors to integers
-  marg <- apply(marg, 2, as.integer)
-  complete <- apply(complete, 2, as.integer)
+  marg <- do.call("cbind", lapply(marg, fact_to_int))
+  complete <- do.call("cbind", lapply(complete, fact_to_int))
 
   ## 1. Run code in C
   .Call('imputeMulti_marg_comp_compare', PACKAGE = 'imputeMulti',
