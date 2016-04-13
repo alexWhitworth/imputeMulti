@@ -1,7 +1,7 @@
 Package: imputeMulti
 Title: Imputation methods for multivariate multinomial data
 Version: 0.4.2
-Authors@R: person("Alex", "Whitworth", email = "whitworth.alex@gmail.com", role = c("aut", "cre"))
+Authors@R: person("Alex", "Whitworth", , "whitworth.alex@gmail.com", role = c("aut", "cre"))
 Description: Implements imputation methods using EM and Data Augmentation for
     multinomial data following the work of Schafer 1997.
 Depends:
