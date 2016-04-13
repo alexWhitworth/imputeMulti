@@ -40,12 +40,12 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     enum_list$counts <- count_compare(x= e2, dat= dat2, hasNA= hasNA)
   } else {
     # resolve edge case when nnodes > nrow(dat2)
-    nnodes <- min(nrow(dat2), detectCores() - leave_cores)
+    nnodes <- min(nrow(dat2), parallel::detectCores() - leave_cores)
     
-    if (grepl("Windows", sessionInfo()$running)) {cl <- makeCluster(nnodes, type= "PSOCK")}
-    else {cl <- makeCluster(nnodes, type= "FORK")}
+    if (grepl("Windows", sessionInfo()$running)) {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
+    else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
     
-    temp <- do.call("cbind", clusterApply(cl,
+    temp <- do.call("cbind", parallel::clusterApply(cl,
           # split data across clusters, share: comparison (e2) and hasNA
           x= parallel:::splitRows(dat2, nnodes), fun= function(x, e2, hasNA) {
             return(imputeMulti:::count_compare(x= e2, dat= x, hasNA= hasNA))
@@ -53,7 +53,7 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
             # and count_compare
           }, e2= e2, hasNA= hasNA))
     enum_list$counts <- apply(temp, 1, sum)
-    stopCluster(cl)
+    parallel::stopCluster(cl)
   }
   # return
   return(enum_list[!is.na(enum_list$counts) & enum_list$counts > 0,])

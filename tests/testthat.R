@@ -1,4 +1,4 @@
 library(testthat)
 library(imputeMulti)
 
-test_check("imputeMulti")
+# test_check("imputeMulti")

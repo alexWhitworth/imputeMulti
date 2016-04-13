@@ -7,6 +7,7 @@
 #' @param x_y A \code{data.frame} of observed counts for complete observations.
 #' @param z_Os_y A \code{data.frame} of observed marginal-counts for incomplete observations.
 #' @param enum_comp A \code{data.frame} specifying a vector of all possible observed patterns.
+#' @param n_obs An integer specifying the number of observations in the original data.
 #' @param conj_prior A string specifying the conjugate prior. One of
 #' \code{c("none", "data.dep", "flat.prior", "non.informative")}.
 #' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if
@@ -16,7 +17,7 @@
 #' @param max_iter An integer specifying the maximum number of allowable iterations. Defaults
 #' to \code{10000}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
-#' @return An object of class \code{mod_imputeMulti}.
+#' @return An object of class \code{\link{mod_imputeMulti-class}}.
 #' @seealso \code{\link{multinomial_data_aug}}, \code{\link{multinomial_impute}}
 #' @export
 multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
@@ -70,7 +71,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
       comp_ind <- marg_comp_compare(matrix(apply(z_Os_y[s, -z_p], 2, as.integer), nrow= 1),  # fix for Rcpp versions
                                         as.matrix(apply(enum_comp[, 1:count_p], 2, as.integer)),
-                                    marg_to_comp= TRUE) # pattern match to complete
+                                    marg_to_complete= TRUE) # pattern match to complete
 
       b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])
       E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[unlist(comp_ind)] / b_Os_y # normalize

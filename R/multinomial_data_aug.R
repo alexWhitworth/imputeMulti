@@ -17,14 +17,13 @@
 #' @param post_draws An integer specifying the number of draws from the posterior distribution.
 #'  Defaults to \code{1000}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
-#' @return An object of class \code{mod_imputeMulti}.
+#' @return An object of class \code{\link{mod_imputeMulti-class}}.
 #' @seealso \code{\link{multinomial_em}}, \code{\link{multinomial_impute}}
 #' @export
-multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
+multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, 
                                  conj_prior= c("none", "data.dep", "flat.prior", "non.informative"), 
                                  alpha= NULL, burnin= 500, post_draws= 1000,
                                  verbose= FALSE) {
-  require(gtools)
   # check some errors
   conj_prior <- match.arg(conj_prior, several.ok= FALSE)
   if (conj_prior %in% c("data.dep", "flat.prior") & is.null(alpha) ) {
@@ -42,7 +41,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
       if (nrow(alpha) != nrow(enum_comp)) {
         stop("nrow(alpha) must match nrow(enum_comp).")
       }
-      enum_comp <- merge(enum_comp, prior)
+      enum_comp <- merge(enum_comp, alpha)
     } else if (conj_prior == "flat.prior") {
       if (!(is.vector(alpha) & length(alpha) == 1)) {
         stop("Flat priors must be supplied as a scalar.")
@@ -71,7 +70,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
       # (x_y| z_Os_y, theta) = \sum_s (Xsy|Zsy, gamma)
       # (Xsy|Zy_theta) ~ M(Zsy, gamma)
       comp_ind <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p], 
-                                    marg_to_comp= TRUE) # pattern match to complete
+                                    marg_to_complete= TRUE) # pattern match to complete
       
       b_Os_y <- sum(enum_comp$theta_y[comp_ind])
       
@@ -94,9 +93,9 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
     # P Step
     if (conj_prior == "none") {
       # in case of random zeros: use non-informative prior
-      enum_comp$theta_y1 <- as.vector(rdirichlet(n=1, alpha= enum_comp$counts + 1))
+      enum_comp$theta_y1 <- as.vector(gtools::rdirichlet(n=1, alpha= enum_comp$counts + 1))
     } else {
-      enum_comp$theta_y1 <- as.vector(rdirichlet(n=1, alpha= enum_comp$counts + enum_comp$alpha))
+      enum_comp$theta_y1 <- as.vector(gtools::rdirichlet(n=1, alpha= enum_comp$counts + enum_comp$alpha))
     }
     
     ### update iteration; print likelihood if verbose
@@ -121,10 +120,10 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, n_obs,
   
   if (conj_prior == "none") {
     # in case of random zeros: use non-informative prior
-    theta_post <- rdirichlet(n= post_draws, alpha= enum_comp$counts + 1) 
+    theta_post <- gtools::rdirichlet(n= post_draws, alpha= enum_comp$counts + 1) 
     enum_comp$theta_y <- colMeans(theta_post)
   } else {
-    theta_post <- rdirichlet(n= post_draws, alpha= enum_comp$counts + enum_comp$alpha)
+    theta_post <- gtools::rdirichlet(n= post_draws, alpha= enum_comp$counts + enum_comp$alpha)
     enum_comp$theta_y <- colMeans(theta_post)
   }
   

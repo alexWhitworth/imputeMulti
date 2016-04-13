@@ -9,6 +9,12 @@
 #' (2) the call to the estimation function; (3) the number of iterations in estimation;
 #' (4) the final log-likelihood; (5) the conjugate prior if any; (6) the MLE estimate of
 #' the sufficient statistics and parameters.
+#' @slot method the modeling method
+#' @slot mle_call the call to the estimation function
+#' @slot mle_iter the number of iterations in estimation
+#' @slot mle_log_lik the final log-likelihood
+#' @slot mle_cp the conjugate prior if any
+#' @slot mle_x_y the MLE estimate of the sufficient statistics and parameters
 #' @docType class
 #' @section Objects from the class: Objects are created by calls to
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
@@ -39,6 +45,10 @@ setClass("mod_imputeMulti",
 ## Methods
 ###########################################################
 ## Print
+#' @title Print mod_imputeMulti class objects
+#' @description print method for class "mod_imputeMulti"
+#' @param object an object of class "mod_imputeMulti"
+#' @param ... further arguments passed to or from other methods.
 #' @export
 setMethod("show", signature= "mod_imputeMulti",
           def= function(object) {
@@ -51,15 +61,18 @@ setMethod("show", signature= "mod_imputeMulti",
 
 ## Summary
 setGeneric("summary")
-
-#' @export
-summary.mod_imputeMulti <- function(object) {
+#' @title Summarizing mod_imputMulti objects
+#' @description summary method for class "mod_imputeMulti"
+#' @param object an object of class "mod_imputeMulti"
+#' @param ... further arguments passed to or from other methods.
+# @export
+summary.mod_imputeMulti <- function(object, ...) {
   print(object)
   
   summary.data.frame(object@mle_x_y[, c("alpha", "theta_y")])
 }
 
-#' @export
+# @export
 setMethod("summary", signature="mod_imputeMulti", def=summary.mod_imputeMulti)
 
 
@@ -72,6 +85,15 @@ setMethod("summary", signature="mod_imputeMulti", def=summary.mod_imputeMulti)
 #' Inherits from \code{mod_imputeMulti}. Additional slots are supplied for (1) the
 #' call to \code{multinomial_impute}; (2) the missing and imputed data;
 #' and (3) the number of observations with missing values.
+#' @slot Gcall the call to \code{multinomial_impute}
+#' @slot method the modeling method
+#' @slot mle_call the call to the estimation function
+#' @slot mle_iter the number of iterations in estimation
+#' @slot mle_log_lik the final log-likelihood
+#' @slot mle_cp the conjugate prior if any
+#' @slot mle_x_y the MLE estimate of the sufficient statistics and parameters
+#' @slot data a \code{list} of the missing and imputed data
+#' @slot nmiss the number of observations with missing data
 #' @docType class
 #' @section Objects from the class: Objects are created by calls to
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
@@ -97,6 +119,10 @@ setClass("imputeMulti",
 ## Methods
 ###########################################################
 ## Print
+#' @title Print imputeMulti class objects
+#' @description print method for class "imputeMulti"
+#' @param object an object of class "imputeMulti"
+#' @param ... further arguments passed to or from other methods.
 #' @export
 setMethod("show", signature= "imputeMulti",
   def= function(object) {
@@ -110,9 +136,12 @@ setMethod("show", signature= "imputeMulti",
 
 ## Summary
 setGeneric("summary")
-
-#' @export
-summary.imputeMulti <- function(object) {
+#' @title Summarizing imputMulti objects
+#' @description summary method for class "imputeMulti"
+#' @param object an object of class "imputeMulti"
+#' @param ... further arguments passed to or from other methods.
+# @export
+summary.imputeMulti <- function(object, ...) {
   print(object)
   
   summary(object@mle_x_y[, c("alpha", "theta_y")])
@@ -120,6 +149,5 @@ summary.imputeMulti <- function(object) {
   lapply(object@data, dim)
 }
 
-#' @export
 setMethod("summary", signature= "imputeMulti",
   summary.imputeMulti)

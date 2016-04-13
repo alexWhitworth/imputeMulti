@@ -3,6 +3,9 @@
 #' @importFrom Rcpp sourceCpp
 
 
+
+
+
 #' @title Impute Values for missing multinomial values
 #' @description Impute values for multivariate multinomial data using either EM or Data
 #' Augmentation.
@@ -13,14 +16,12 @@
 #' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
-#' @param alpha The vector of counts \eqn{\alpha} for a \eqn{Dir(\alpha)} prior. Must be specified if 
-#' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
-#' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
-#' #' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
+#' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
+#' @return An object of class \code{\link{imputeMulti-class}}
 #' @references Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. 
 #' CRC press, 1997. 
-#' @seealso \code{\link{expand.grid}}, \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
+#' @seealso \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
 #' @export
 multinomial_impute <- function(dat, method= c("EM", "DA"),
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
@@ -92,8 +93,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   else if (method == "DA") {
     # Use defaults for max_iter, burnin, post_draws
     mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
-                                            n_obs= nrow(dat), conj_prior= conj_prior, 
-                                            alpha= alpha, verbose= verbose)     
+                                            conj_prior= conj_prior, alpha= alpha, verbose= verbose)     
   }
   
   # 04. Impute missing values 
