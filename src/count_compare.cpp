@@ -83,7 +83,7 @@ IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, const std::st
       }
     }
   } else {
-    cout << "ERROR: hasNA improperly specified" << endl;
+    // cout << "ERROR: hasNA improperly specified" << endl;
     return -1;
   }
   // return counts
