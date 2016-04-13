@@ -10,8 +10,8 @@ test_that("supDist errors and results", {
   x2 <- rnorm(100)
   y  <- rnorm(100)
   
-  expect_equal(supDist(x1, y), -1) # supDist returns -1 for error
-  expect_equal(supDist(y, x1), -1)
+  expect_error(supDist(x1, y)) 
+  expect_error(supDist(y, x1))
   
   expect_equal(supDist(x2,y), max(abs(x2-y)))
 })
@@ -27,9 +27,8 @@ test_that("errors work; return type is correct", {
   x2 <- rbind(x2,x2)
   x3 <- x2[,1:5]
   
-  expect_equal(marg_comp_compare(x, x2, FALSE), list())
-  expect_equal(marg_comp_compare(x, x2, TRUE), list())
-  # expect_error(marg_comp_compare(x, x2, "blah"), list())
+  expect_error(marg_complete_compare(x, x2, FALSE))
+  expect_error(marg_complete_compare(x, x2, TRUE))
   
   expect_true(is.list(marg_comp_compare(x, x3, FALSE)))
   expect_true(is.list(marg_comp_compare(x, x3, TRUE)))

@@ -6,7 +6,7 @@
 \usage{
 multinomial_impute(dat, method = c("EM", "DA"), conj_prior = c("none",
   "data.dep", "flat.prior", "non.informative"), alpha = NULL,
-  verbose = FALSE, tol = 5e-07)
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{dat}{A \code{data.frame}. All variables must be factors.}
@@ -22,7 +22,7 @@ as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enu
 
 \item{verbose}{Logical. If \code{TRUE}, provide verbose output on each iteration.}
 
-\item{tol}{A scalar specifying the convergence criteria. Defaults to \code{5e-7}}
+\item{...}{Arguments to be passed to other methods}
 }
 \value{
 An object of class \code{\link{imputeMulti-class}}

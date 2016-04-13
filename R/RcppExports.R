@@ -5,8 +5,8 @@ count_compare <- function(x, dat, hasNA) {
     .Call('imputeMulti_count_compare', PACKAGE = 'imputeMulti', x, dat, hasNA)
 }
 
-supDist <- function(x, y) {
-    .Call('imputeMulti_supDist', PACKAGE = 'imputeMulti', x, y)
+supDistC <- function(x, y) {
+    .Call('imputeMulti_supDistC', PACKAGE = 'imputeMulti', x, y)
 }
 
 marg_comp_compare <- function(marg, complete, marg_to_complete = FALSE) {

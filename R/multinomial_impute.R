@@ -17,7 +17,7 @@
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
-#' @param tol A scalar specifying the convergence criteria. Defaults to \code{5e-7}
+#' @param ... Arguments to be passed to other methods
 #' @return An object of class \code{\link{imputeMulti-class}}
 #' @references Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. 
 #' CRC press, 1997. 
@@ -25,7 +25,7 @@
 #' @export
 multinomial_impute <- function(dat, method= c("EM", "DA"),
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
-                           alpha= NULL, verbose= FALSE, tol= 5e-7) {
+                           alpha= NULL, verbose= FALSE, ...) {
   if (!all(apply(dat, 2, is.factor))) {
     # enforce factor variables
     dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
@@ -82,18 +82,63 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # 03. EM -- get MLE for theta_y
     # NOTE:: need to implement data augmentation option
   #----------------------------------------------
+  l_dots <- eval(substitute(alist(...)))
   # EM
   if (method == "EM") {
-    # Use defaults  for max_iter
+    if (length(l_dots) == 0) {
+    # Use defaults  for max_iter, tol
     mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                                       n_obs= nrow(dat), conj_prior= conj_prior, 
-                                      alpha= alpha, verbose= verbose, tol= tol) 
+                                      alpha= alpha, verbose= verbose) 
+    } else { # specify tol/max_iter
+      n_l <- names(l_dots)
+      if ((length(n_l) == 2 & all(c("max_iter", "tol") %in% n_l))) {
+        mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                          n_obs= nrow(dat), conj_prior= conj_prior, 
+                                          alpha= alpha, verbose= verbose, max_iter = l_dots$max_iter,
+                                          tol= l_dots$tol) 
+      } else if (("tol" %in% n_l) & !("max_iter" %in% n_l)) {
+        mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                          n_obs= nrow(dat), conj_prior= conj_prior, 
+                                          alpha= alpha, verbose= verbose, tol= l_dots$tol) 
+      } else if (!("tol" %in% n_l) & ("max_iter" %in% n_l)) {
+        mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                          n_obs= nrow(dat), conj_prior= conj_prior, 
+                                          alpha= alpha, verbose= verbose, max_iter = l_dots$max_iter) 
+      } else {
+        # Use defaults  for max_iter, tol
+        mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                          n_obs= nrow(dat), conj_prior= conj_prior, 
+                                          alpha= alpha, verbose= verbose) 
+      }
+    }
   }
   # Data Augmentation
   else if (method == "DA") {
-    # Use defaults for max_iter, burnin, post_draws
-    mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
-                                            conj_prior= conj_prior, alpha= alpha, verbose= verbose)     
+    if (length(l_dots) == 0) {
+      # Use defaults for burnin, post_draws
+      mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                              conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
+    } else { # specify burnin / post_draws
+      n_l <- names(l_dots)
+      if (length(n_l) == 2 & all(c("burnin", "post_draws") %in% n_l)) {
+        mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                                conj_prior= conj_prior, alpha= alpha, verbose= verbose,
+                                                burnin= l_dots$burnin, post_draws= l_dots$post_draws)
+      } else if (("burnin" %in% n_l) & !("post_draws" %in% n_l)) {
+        mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                                conj_prior= conj_prior, alpha= alpha, verbose= verbose,
+                                                burnin= l_dots$burnin)
+      } else if (!("burnin" %in% n_l) & ("post_draws" %in% n_l)) {
+        mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                                conj_prior= conj_prior, alpha= alpha, verbose= verbose,
+                                                post_draws= l_dots$post_draws)
+      } else {
+        # Use defaults for burnin, post_draws
+        mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                                                conj_prior= conj_prior, alpha= alpha, verbose= verbose)
+      }
+    }
   }
   
   # 04. Impute missing values 

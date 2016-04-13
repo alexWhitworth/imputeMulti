@@ -1,4 +1,10 @@
 
+# [4/2016] Moving supDist wrapper to R -- for R CMD Check
+# wrapper to supDistC to move error checking outside of C++
+supDist <- function(x,y) {
+  if (length(x) != length(y)) stop("Length of x and y differ.")
+  .Call('imputeMulti_supDistC', PACKAGE = 'imputeMulti', x, y)
+}
 
 # convert a factor-vector to an integer vector, where the integers correspond
 # to the levels of the factor.
@@ -47,7 +53,7 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     
     temp <- do.call("cbind", parallel::clusterApply(cl,
           # split data across clusters, share: comparison (e2) and hasNA
-          x= parallel:::splitRows(dat2, nnodes), fun= function(x, e2, hasNA) {
+          x= splitRows(dat2, nnodes), fun= function(x, e2, hasNA) {
             return(imputeMulti:::count_compare(x= e2, dat= x, hasNA= hasNA))
             # wrapper function needed for parameter-name-confusion b/w clusterApply
             # and count_compare
@@ -73,6 +79,8 @@ marg_complete_compare <- function(marg, complete, marg_to_complete= FALSE) {
   ## 0. Pre-processing: convert factors to integers
   marg <- do.call("cbind", lapply(marg, fact_to_int))
   complete <- do.call("cbind", lapply(complete, fact_to_int))
+  
+  if (ncol(marg) != ncol(complete)) stop("ncol of marg and complete do not match.")
 
   ## 1. Run code in C
   .Call('imputeMulti_marg_comp_compare', PACKAGE = 'imputeMulti',

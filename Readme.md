@@ -31,30 +31,16 @@ install_github("alexwhitworth/imputeMulti",dependencies=TRUE)
 
 ## Example usage:
 ```
-### Create a toy data frame of multivariate multinomial data
-### with missing data
-set.seed(12315)
-x1 <- factor(sample(1:5, size=100, replace= TRUE))
-x2 <- factor(sample(6:10, size=100, replace= TRUE))
-x3 <- factor(sample(11:15, size=100, replace= TRUE))
-x4 <- factor(sample(16:20, size=100, replace= TRUE))
-x5 <- factor(sample(21:26, size=100, replace= TRUE))
-
-dat <- c(x1, x2, x3, x4, x5)
-mis.ind <- sample(1:length(dat), size= 75, replace= FALSE)
-dat[mis.ind] <- NA
-dim(dat)<- c(100, 5)
-rm(x1,x2,x3,x4,x5, mis.ind)
-
-# ensure all factors
-dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
-
-## load library, usage for non-informative priors for both EM and DA
+## load library and example data
 library(imputeMulti)
-test_em <- multinomial_impute(dat, method= "EM",
+data(tract2221)
+
+# usage for non-informative priors for both EM and DA
+# other priors may also be specified (not shown)
+test_em <- multinomial_impute(tract2221[,1:4], method= "EM",
                               conj_prior = "non.informative", verbose= TRUE)
 
-test_da <- multinomial_impute(dat, method= "DA",
+test_da <- multinomial_impute(tract2221[,1:4], method= "DA",
                                  conj_prior = "non.informative", verbose= TRUE)
 ```
 

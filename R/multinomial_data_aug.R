@@ -72,12 +72,12 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
       comp_ind <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p], 
                                     marg_to_complete= TRUE) # pattern match to complete
       
-      b_Os_y <- sum(enum_comp$theta_y[comp_ind])
+      b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])
       
       E_Xsy_Zy_theta <- as.vector(rmultinom(1, size= z_Os_y$counts[s], 
-                                  prob= enum_comp$theta_y[comp_ind] / b_Os_y)) # normalized probability
+                                  prob= enum_comp$theta_y[unlist(comp_ind)] / b_Os_y)) # normalized probability
       # expected count += random draw based on marginally-observed
-      enum_comp$counts[comp_ind] <- enum_comp$counts[comp_ind] + E_Xsy_Zy_theta
+      enum_comp$counts[unlist(comp_ind)] <- enum_comp$counts[unlist(comp_ind)] + E_Xsy_Zy_theta
       
       # update log-lik
       if (b_Os_y > 0) {

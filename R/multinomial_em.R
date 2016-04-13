@@ -69,8 +69,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       # allocate observed marginal counts proportionally to complete patterns
       # E(x_y| z_Os_y, theta) = \sum_s [E_Xsy_Zy_theta]
       # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
-      comp_ind <- marg_comp_compare(matrix(apply(z_Os_y[s, -z_p], 2, as.integer), nrow= 1),  # fix for Rcpp versions
-                                        as.matrix(apply(enum_comp[, 1:count_p], 2, as.integer)),
+      comp_ind <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p],
                                     marg_to_complete= TRUE) # pattern match to complete
 
       b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])

@@ -18,15 +18,15 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// supDist
-double supDist(const NumericVector& x, const NumericVector& y);
-RcppExport SEXP imputeMulti_supDist(SEXP xSEXP, SEXP ySEXP) {
+// supDistC
+double supDistC(const NumericVector& x, const NumericVector& y);
+RcppExport SEXP imputeMulti_supDistC(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type y(ySEXP);
-    __result = Rcpp::wrap(supDist(x, y));
+    __result = Rcpp::wrap(supDistC(x, y));
     return __result;
 END_RCPP
 }
