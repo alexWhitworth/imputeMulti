@@ -53,7 +53,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     # calc theta_y from alpha
     enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
   } else {
-    enum_comp$theta_y <- runif(nrow(enum_comp))
+    enum_comp$theta_y <- stats::runif(nrow(enum_comp))
     enum_comp$theta_y <- enum_comp$theta_y / sum(enum_comp$theta_y)
   }
 
@@ -116,7 +116,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       enum_comp$theta_y1 <- NULL
       enum_comp$counts <- NULL
 
-      mod <- new("mod_imputeMulti",
+      mod <- methods::new("mod_imputeMulti",
                  method= "EM",
                  mle_call= mc,
                  mle_iter= iter,
@@ -140,7 +140,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   enum_comp$theta_y1 <- NULL
   enum_comp$counts <- NULL
 
-  mod <- new("mod_imputeMulti",
+  mod <- methods::new("mod_imputeMulti",
              method= "EM",
              mle_call= mc,
              mle_iter= iter,

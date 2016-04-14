@@ -16,7 +16,7 @@ data_dep_prior_multi <- function(dat) {
   
   enum <- expand.grid(sapply(dat, levels))
   
-  comp <- which(complete.cases(dat))
+  comp <- which(stats::complete.cases(dat))
   comp_frac <- length(comp) / nrow(dat) 
   
   if (comp_frac < .2) {

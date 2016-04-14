@@ -53,7 +53,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
     # calc theta_y from alpha
     enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
   } else {
-    enum_comp$theta_y <- runif(nrow(enum_comp))
+    enum_comp$theta_y <- stats::runif(nrow(enum_comp))
     enum_comp$theta_y <- enum_comp$theta_y / sum(enum_comp$theta_y)
   }
   
@@ -74,7 +74,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
       
       b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])
       
-      E_Xsy_Zy_theta <- as.vector(rmultinom(1, size= z_Os_y$counts[s], 
+      E_Xsy_Zy_theta <- as.vector(stats::rmultinom(1, size= z_Os_y$counts[s], 
                                   prob= enum_comp$theta_y[unlist(comp_ind)] / b_Os_y)) # normalized probability
       # expected count += random draw based on marginally-observed
       enum_comp$counts[unlist(comp_ind)] <- enum_comp$counts[unlist(comp_ind)] + E_Xsy_Zy_theta
@@ -130,7 +130,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
   enum_comp$theta_y1 <- NULL
   enum_comp$counts <- NULL
   
-  mod <- new("mod_imputeMulti",
+  mod <- methods::new("mod_imputeMulti",
              method= "DA",
              mle_call= mc,
              mle_iter= iter,

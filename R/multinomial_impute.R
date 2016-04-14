@@ -44,16 +44,16 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   p <- ncol(dat)
   
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
-  enum_comp <- enum[complete.cases(enum),] 
-  enum_miss <- enum[!complete.cases(enum),]
+  enum_comp <- enum[stats::complete.cases(enum),] 
+  enum_miss <- enum[!stats::complete.cases(enum),]
   enum_miss <- enum_miss[apply(enum_miss, 1, function(x) !all(is.na(x))),] # not all missing
   rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
   
   # 02. get counts / sufficient statistics
   #   parse / compute prior
   #----------------------------------------------
-  dat_comp <- dat[complete.cases(dat),]
-  dat_miss <- dat[!complete.cases(dat),]
+  dat_comp <- dat[stats::complete.cases(dat),]
+  dat_miss <- dat[!stats::complete.cases(dat),]
   # complete data sufficient statistics
   if (verbose == TRUE) print("Calculating observed data sufficient statistics.")
   x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no") 
