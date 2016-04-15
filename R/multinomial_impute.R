@@ -152,7 +152,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   
   # 05. return
   #----------------------------------------------
-  ret <- new("imputeMulti",
+  ret <- methods::new("imputeMulti",
              Gcall= mc, method= mle_multinomial@method,
              mle_call= mle_multinomial@mle_call,
              mle_iter= mle_multinomial@mle_iter, 

@@ -49,7 +49,7 @@ setClass("mod_imputeMulti",
 #' @description print method for class "mod_imputeMulti"
 #' @param object an object of class "mod_imputeMulti"
 #' @param ... further arguments passed to or from other methods.
-#' @export
+#' @exportMethod show
 setMethod("show", signature= "mod_imputeMulti",
           def= function(object) {
             cat("\n Call: \n", paste(deparse(object@mle_call)),
@@ -61,10 +61,6 @@ setMethod("show", signature= "mod_imputeMulti",
 
 ## Summary
 setGeneric("summary")
-#' @title Summarizing mod_imputMulti objects
-#' @description summary method for class "mod_imputeMulti"
-#' @param object an object of class "mod_imputeMulti"
-#' @param ... further arguments passed to or from other methods.
 # @export
 summary.mod_imputeMulti <- function(object, ...) {
   print(object)
@@ -72,7 +68,11 @@ summary.mod_imputeMulti <- function(object, ...) {
   summary.data.frame(object@mle_x_y[, c("alpha", "theta_y")])
 }
 
-# @export
+#' @title Summarizing mod_imputMulti objects
+#' @description summary method for class "mod_imputeMulti"
+#' @param object an object of class "mod_imputeMulti"
+#' @param ... further arguments passed to or from other methods.
+#' @exportMethod summary
 setMethod("summary", signature="mod_imputeMulti", def=summary.mod_imputeMulti)
 
 
@@ -123,7 +123,7 @@ setClass("imputeMulti",
 #' @description print method for class "imputeMulti"
 #' @param object an object of class "imputeMulti"
 #' @param ... further arguments passed to or from other methods.
-#' @export
+#' @exportMethod show
 setMethod("show", signature= "imputeMulti",
   def= function(object) {
     cat("\n Global Call: \n", paste(deparse(object@Gcall)),
@@ -136,10 +136,6 @@ setMethod("show", signature= "imputeMulti",
 
 ## Summary
 setGeneric("summary")
-#' @title Summarizing imputMulti objects
-#' @description summary method for class "imputeMulti"
-#' @param object an object of class "imputeMulti"
-#' @param ... further arguments passed to or from other methods.
 # @export
 summary.imputeMulti <- function(object, ...) {
   print(object)
@@ -149,5 +145,10 @@ summary.imputeMulti <- function(object, ...) {
   lapply(object@data, dim)
 }
 
+#' @title Summarizing imputMulti objects
+#' @description summary method for class "imputeMulti"
+#' @param object an object of class "imputeMulti"
+#' @param ... further arguments passed to or from other methods.
+#' @exportMethod summary
 setMethod("summary", signature= "imputeMulti",
   summary.imputeMulti)
