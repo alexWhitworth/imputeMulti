@@ -50,6 +50,7 @@ setClass("mod_imputeMulti",
 #' @param object an object of class "mod_imputeMulti"
 #' @param ... further arguments passed to or from other methods.
 #' @exportMethod show
+#' @export
 setMethod("show", signature= "mod_imputeMulti",
           def= function(object) {
             cat("\n Call: \n", paste(deparse(object@mle_call)),
@@ -124,6 +125,7 @@ setClass("imputeMulti",
 #' @param object an object of class "imputeMulti"
 #' @param ... further arguments passed to or from other methods.
 #' @exportMethod show
+#' @export
 setMethod("show", signature= "imputeMulti",
   def= function(object) {
     cat("\n Global Call: \n", paste(deparse(object@Gcall)),
