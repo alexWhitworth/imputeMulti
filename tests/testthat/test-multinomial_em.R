@@ -87,9 +87,9 @@ test_that("multinomial EM is converging", {
                           verbose= FALSE, max_iter= 6) 
   
   # tests:
-  expect_less_than(iter2@mle_log_lik, iter4@mle_log_lik)
-  expect_less_than(iter2@mle_log_lik, iter6@mle_log_lik)
-  expect_less_than(iter4@mle_log_lik, iter6@mle_log_lik)
+  expect_lt(iter2@mle_log_lik, iter4@mle_log_lik)
+  expect_lt(iter2@mle_log_lik, iter6@mle_log_lik)
+  expect_lt(iter4@mle_log_lik, iter6@mle_log_lik)
   expect_null(iter6@mle_x_y$alpha) # no prior
   expect_null(iter6@mle_x_y$counts)
   expect_null(iter6@mle_x_y$theta_y1)

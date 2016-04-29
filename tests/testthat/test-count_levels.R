@@ -43,19 +43,19 @@ test_that("count levels works with all missing data options... parallel = FALSE"
   ### no missing data tests
   expect_equal(sum(cnt.comp$counts), sum(complete.cases(dat)))
   expect_equal(sum(cnt.comp$counts == 0), 0)
-  expect_less_than(nrow(cnt.comp), nrow(enum))
-  expect_less_than(ncol(enum), ncol(cnt.comp))
+  expect_lt(nrow(cnt.comp), nrow(enum))
+  expect_lt(ncol(enum), ncol(cnt.comp))
 
   ### missing data tests -- count.obs
   expect_equal(sum(cnt.ob$counts == 0), 0)
-  expect_less_than(nrow(cnt.ob), nrow(enum))
-  expect_less_than(ncol(enum), ncol(cnt.ob))
+  expect_lt(nrow(cnt.ob), nrow(enum))
+  expect_lt(ncol(enum), ncol(cnt.ob))
 
   ### missing data tests -- count.miss
   expect_equal(sum(cnt.mis$counts), sum(!complete.cases(dat)))
   expect_equal(sum(cnt.mis$counts == 0), 0)
-  expect_less_than(nrow(cnt.mis), nrow(enum))
-  expect_less_than(ncol(enum), ncol(cnt.mis))
+  expect_lt(nrow(cnt.mis), nrow(enum))
+  expect_lt(ncol(enum), ncol(cnt.mis))
   expect_equal(sum(cnt.mis$counts) + sum(cnt.comp$counts), nrow(dat))
 })
 
@@ -86,19 +86,19 @@ test_that("count levels works with all missing data options... parallel = TRUE",
   ### no missing data tests
   expect_equal(sum(cnt.comp$counts), sum(complete.cases(dat)))
   expect_equal(sum(cnt.comp$counts == 0), 0)
-  expect_less_than(nrow(cnt.comp), nrow(enum))
-  expect_less_than(ncol(enum), ncol(cnt.comp))
+  expect_lt(nrow(cnt.comp), nrow(enum))
+  expect_lt(ncol(enum), ncol(cnt.comp))
 
   ### missing data tests -- count.obs
   expect_equal(sum(cnt.ob$counts == 0), 0)
-  expect_less_than(nrow(cnt.ob), nrow(enum))
-  expect_less_than(ncol(enum), ncol(cnt.ob))
+  expect_lt(nrow(cnt.ob), nrow(enum))
+  expect_lt(ncol(enum), ncol(cnt.ob))
 
   ### missing data tests -- count.miss
   expect_equal(sum(cnt.mis$counts), sum(!complete.cases(dat)))
   expect_equal(sum(cnt.mis$counts == 0), 0)
-  expect_less_than(nrow(cnt.mis), nrow(enum))
-  expect_less_than(ncol(enum), ncol(cnt.mis))
+  expect_lt(nrow(cnt.mis), nrow(enum))
+  expect_lt(ncol(enum), ncol(cnt.mis))
   expect_equal(sum(cnt.mis$counts) + sum(cnt.comp$counts), nrow(dat))
 })
 

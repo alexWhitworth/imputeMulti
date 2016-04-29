@@ -138,5 +138,13 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
              mle_cp= conj_prior,
              mle_x_y= enum_comp)
   
+  # mod <- list(method= "DA",
+  #             mle_call= mc,
+  #             mle_iter= iter,
+  #             mle_log_lik= log_lik,
+  #             mle_cp= conj_prior,
+  #             mle_x_y= enum_comp)
+  # class(mod) <- "mod_imputeMulti"
+  
   return(mod)
 }

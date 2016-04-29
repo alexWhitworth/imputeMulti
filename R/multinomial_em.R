@@ -48,7 +48,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       }
       enum_comp$alpha <- alpha
     } else if (conj_prior == "non.informative") {
-      enum_comp$alpha <- 1
+      enum_comp$alpha <- 1/2 # Jeffrey's prior
     }
     # calc theta_y from alpha
     enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
@@ -123,6 +123,15 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                  mle_log_lik= log_lik,
                  mle_cp= conj_prior,
                  mle_x_y= enum_comp)
+      
+      # mod <- list(method= "EM", 
+      #             mle_call= mc,
+      #             mle_iter= iter,
+      #             mle_log_lik= log_lik,
+      #             mle_cp= conj_prior,
+      #             mle_x_y= enum_comp)
+      # 
+      # class(mod) <- "mod_imputeMulti"
 
       return(mod)
     } else {
@@ -147,6 +156,14 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
              mle_log_lik= log_lik,
              mle_cp= conj_prior,
              mle_x_y= enum_comp)
+  
+  # mod <- list(method= "EM", 
+  #             mle_call= mc,
+  #             mle_iter= iter,
+  #             mle_log_lik= log_lik,
+  #             mle_cp= conj_prior,
+  #             mle_x_y= enum_comp)
+  # class(mod) <- "mod_imputeMulti"
 
   return(mod)
 }

@@ -84,8 +84,8 @@ test_that("multinomial DA is converging", {
                           conj_prior= "none", verbose= FALSE, burnin= 10)
 
   # tests:
-  expect_less_than(iter1@mle_log_lik, iter20@mle_log_lik)
-  expect_less_than(iter1@mle_log_lik, iter10@mle_log_lik)
+  expect_lt(iter1@mle_log_lik, iter20@mle_log_lik)
+  expect_lt(iter1@mle_log_lik, iter10@mle_log_lik)
   expect_null(iter20@mle_x_y$alpha) # no prior
   expect_null(iter20@mle_x_y$counts)
   expect_null(iter20@mle_x_y$theta_y1)

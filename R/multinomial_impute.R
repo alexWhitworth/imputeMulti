@@ -76,7 +76,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
     }
     alpha <- alpha
   } else if (conj_prior == "non.informative") {
-    alpha <- 1
+    alpha <- 1/2 # Jeffrey's prior
   }
   
   # 03. EM -- get MLE for theta_y
@@ -146,6 +146,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # EM & DA
   if (verbose) print("Imputing missing observations via MLE results.")
   dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial@mle_x_y, p=p)
+  # dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$mle_x_y, p=p)
   
   #combine:
   imputed_data <- rbind(dat_comp, dat_miss2)
@@ -155,13 +156,23 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   ret <- methods::new("imputeMulti",
              Gcall= mc, method= mle_multinomial@method,
              mle_call= mle_multinomial@mle_call,
-             mle_iter= mle_multinomial@mle_iter, 
+             mle_iter= mle_multinomial@mle_iter,
              mle_log_lik= mle_multinomial@mle_log_lik,
              mle_cp= mle_multinomial@mle_cp,
              mle_x_y= mle_multinomial@mle_x_y,
              data= list(missing_data= dat_miss, imputed_data= imputed_data),
              nmiss= nrow(dat_miss)
              )
+  
+  # ret <- list(Gcall= mc, method= mle_multinomial$method,
+  #             mle_call= mle_multinomial$mle_call,
+  #             mle_iter= mle_multinomial$mle_iter, 
+  #             mle_log_lik= mle_multinomial$mle_log_lik,
+  #             mle_cp= mle_multinomial$mle_cp,
+  #             mle_x_y= mle_multinomial$mle_x_y,
+  #             data= list(missing_data= dat_miss, imputed_data= imputed_data),
+  #             nmiss= nrow(dat_miss))
+  # class(ret) <- "imputeMulti"
   
   return(ret)
   

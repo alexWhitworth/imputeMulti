@@ -13,7 +13,7 @@ test_that("new(mod_imputeMulti) works", {
            mle_x_y= data.frame(x=rnorm(100),y=rnorm(100)))
   
   expect_equal(typeof(x), "S4")
-  expect_output(class(x), "mod_imputeMulti")
+  expect_true(is.mod_imputeMulti(x))
 })
 
 test_that("mod_imputeMulti errors", {
@@ -68,7 +68,8 @@ test_that("new(imputeMulti) works", {
             nmiss= 1000)
   
   expect_equal(typeof(x2), "S4")
-  expect_output(class(x2), "imputeMulti")
+  expect_true(is.mod_imputeMulti(x))
+  expect_true(is.mod_imputeMulti(x2))
 })
 
 

@@ -38,6 +38,12 @@ and (3) the number of observations with missing values.
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 \code{\link{multinomial_data_aug}}.
 }
+
+\section{Methods}{
+
+\code{\link{show}}
+\code{\link{summary}}
+}
 \seealso{
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 \code{\link{multinomial_data_aug}}
