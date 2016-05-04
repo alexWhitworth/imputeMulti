@@ -41,8 +41,7 @@ and (3) the number of observations with missing values.
 
 \section{Methods}{
 
-\code{\link{show}}
-\code{\link{summary}}
+\code{\link{summary,imputeMulti-method}}
 }
 \seealso{
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 

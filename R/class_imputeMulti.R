@@ -20,9 +20,8 @@
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 #' \code{\link{multinomial_data_aug}}.
 #' @section Methods:
-#' \code{\link{show}}
-#' \code{\link{print}}
-#' \code{\link{summary}}
+# \code{\link{show,mod_imputeMulti-method}}
+#' \code{\link{summary,mod_imputeMulti-method}}
 #' @seealso \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 #' \code{\link{multinomial_data_aug}}
 #' @exportClass mod_imputeMulti
@@ -58,14 +57,14 @@ show.mod_imputeMulti <- function(object) {
       "\n\n Log-Likelihood: ", object@mle_log_lik)
 }
 
-#' @title Print mod_imputeMulti class objects
-#' @description print method for class "mod_imputeMulti"
-#' @param object an object of class "mod_imputeMulti"
-#' @param ... further arguments passed to or from other methods.
-#' @exportMethod show
-#' @export
-setMethod("show", signature= "mod_imputeMulti",
-          def= show.mod_imputeMulti)
+# @title Print mod_imputeMulti class objects
+# @description print method for class "mod_imputeMulti"
+# @param object an object of class "mod_imputeMulti"
+# @param ... further arguments passed to or from other methods.
+# @exportMethod show
+# @export
+# setMethod("show", signature= "mod_imputeMulti",
+#           def= show.mod_imputeMulti)
 
 
 ## Summary
@@ -108,9 +107,8 @@ setMethod("summary", signature="mod_imputeMulti", def=summary.mod_imputeMulti)
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 #' \code{\link{multinomial_data_aug}}.
 #' @section Methods:
-#' \code{\link{show}}
-#' \code{\link{print}}
-#' \code{\link{summary}}
+# \code{\link{show,imputeMulti-method}}
+#' \code{\link{summary,imputeMulti-method}}
 #' @seealso \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 #' \code{\link{multinomial_data_aug}}
 #' @exportClass imputeMulti
@@ -143,14 +141,14 @@ show.imputeMulti <- function(object) {
       "\n Number Missing: ", object@nmiss)
 }
 
-#' @title Print imputeMulti class objects
-#' @description print method for class "imputeMulti"
-#' @param object an object of class "imputeMulti"
-#' @param ... further arguments passed to or from other methods.
-#' @exportMethod show
-#' @export
-setMethod("show", signature= "imputeMulti",
-  def= show.imputeMulti)
+# @title Print imputeMulti class objects
+# @description print method for class "imputeMulti"
+# @param object an object of class "imputeMulti"
+# @param ... further arguments passed to or from other methods.
+# @exportMethod show
+# @export
+# setMethod("show", signature= "imputeMulti",
+#   def= show.imputeMulti)
 
 ## Summary
 setGeneric("summary")

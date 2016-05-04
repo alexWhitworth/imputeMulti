@@ -36,26 +36,8 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
 
   # 01. Merge in prior if supplied; calculate if requested
   #----------------------------------------------
-  if (conj_prior != "none") {
-    if (conj_prior == "data.dep") {
-      if (nrow(alpha) != nrow(enum_comp)) {
-        stop("nrow(alpha) must match nrow(enum_comp).")
-      }
-      enum_comp <- merge(enum_comp, alpha)
-    } else if (conj_prior == "flat.prior") {
-      if (!(is.vector(alpha) & length(alpha) == 1)) {
-        stop("Flat priors must be supplied as a scalar.")
-      }
-      enum_comp$alpha <- alpha
-    } else if (conj_prior == "non.informative") {
-      enum_comp$alpha <- 1/2 # Jeffrey's prior
-    }
-    # calc theta_y from alpha
-    enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
-  } else {
-    enum_comp$theta_y <- stats::runif(nrow(enum_comp))
-    enum_comp$theta_y <- enum_comp$theta_y / sum(enum_comp$theta_y)
-  }
+  enum_comp <- check_prior(conj_prior= conj_prior, alpha= alpha, verbose= verbose,
+                           outer= FALSE, enum_comp= enum_comp)
 
   # 02. E and M Steps
   #----------------------------------------------

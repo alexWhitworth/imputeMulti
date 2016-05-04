@@ -33,3 +33,55 @@ data_dep_prior_multi <- function(dat) {
   
   return(prior)
 }
+
+
+# helper function for checking priors in 3 main functions. 
+# reduces duplication of code
+check_prior <- function(conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
+                        alpha= NULL, verbose= FALSE,
+                        outer= FALSE, enum_comp= NULL) {
+  if (outer) { # called w/in multinomial_impute
+    if (conj_prior == "none") return(NULL)
+    
+    if (conj_prior == "data.dep") {
+      if (!is.null(alpha)) {
+        if (verbose == TRUE) print("Using user-supplied data dependent prior.")
+        message("Using user-supplied data dependent prior.")
+      } else {
+        if (verbose == TRUE) print("Calculating data dependent prior.")
+        message("Calculating data dependent prior.")
+        alpha <- data_dep_prior_multi(dat= dat)
+      }
+    } else if (conj_prior == "flat.prior") {
+      if (!(is.vector(alpha) & length(alpha) == 1)) {
+        stop("Flat priors must be supplied as a scalar.")
+      }
+      alpha <- alpha
+    } else if (conj_prior == "non.informative") {
+      alpha <- 1 # Jeffrey's prior * 2
+    }
+    return(alpha)
+  } else { # called w/in multinomial_em or multinomial_data_aug
+    if (conj_prior != "none") {
+      if (conj_prior == "data.dep") {
+        if (nrow(alpha) != nrow(enum_comp)) {
+          stop("nrow(alpha) must match nrow(enum_comp).")
+        }
+        enum_comp <- merge(enum_comp, alpha)
+      } else if (conj_prior == "flat.prior") {
+        if (!(is.vector(alpha) & length(alpha) == 1)) {
+          stop("Flat priors must be supplied as a scalar.")
+        }
+        enum_comp$alpha <- alpha
+      } else if (conj_prior == "non.informative") {
+        enum_comp$alpha <- 1 # Jeffrey's prior * 2
+      } 
+      # calc theta_y from alpha
+      enum_comp$theta_y <- enum_comp$alpha / sum(enum_comp$alpha)
+    } else {
+      enum_comp$theta_y <- stats::runif(nrow(enum_comp))
+      enum_comp$theta_y <- enum_comp$theta_y / sum(enum_comp$theta_y)
+    }
+    return(enum_comp)
+  }
+}

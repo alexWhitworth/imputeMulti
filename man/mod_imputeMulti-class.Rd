@@ -36,8 +36,7 @@ the sufficient statistics and parameters.
 
 \section{Methods}{
 
-\code{\link{show}}
-\code{\link{summary}}
+\code{\link{summary,mod_imputeMulti-method}}
 }
 \seealso{
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 

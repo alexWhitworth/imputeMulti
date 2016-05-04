@@ -61,23 +61,8 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss") 
   # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
-  if (conj_prior == "data.dep") {
-    if (!is.null(alpha)) {
-      if (verbose == TRUE) print("Using user-supplied data dependent prior.")
-      message("Using user-supplied data dependent prior.")
-    } else {
-      if (verbose == TRUE) print("Calculating data dependent prior.")
-      message("Calculating data dependent prior.")
-      alpha <- data_dep_prior_multi(dat= dat)
-    }
-  } else if (conj_prior == "flat.prior") {
-    if (!(is.vector(alpha) & length(alpha) == 1)) {
-      stop("Flat priors must be supplied as a scalar.")
-    }
-    alpha <- alpha
-  } else if (conj_prior == "non.informative") {
-    alpha <- 1/2 # Jeffrey's prior
-  }
+  alpha <- check_prior(conj_prior= conj_prior, alpha= alpha, verbose= verbose,
+                       outer= TRUE)
   
   # 03. EM -- get MLE for theta_y
     # NOTE:: need to implement data augmentation option
@@ -177,6 +162,3 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   return(ret)
   
 }
-
-
-
