@@ -46,7 +46,7 @@ of a Dirichlet conjugate prior.
  z_Os_y <- multinomial_stats(tract2221[,1:4], output= "z_Os_y")
  x_possible <- multinomial_stats(tract2221[,1:4], output= "possible.obs")
 
- imputeEM_mle <- multinomial_em(x_y, z_Os_y, x_possible, n_obs= nrow(tract_2221),
+ imputeEM_mle <- multinomial_em(x_y, z_Os_y, x_possible, n_obs= nrow(tract2221),
                      conj_prior= "none", verbose= TRUE)
 }
 
