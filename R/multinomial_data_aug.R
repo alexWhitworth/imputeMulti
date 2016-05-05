@@ -21,6 +21,7 @@
 #' @seealso \code{\link{multinomial_em}}, \code{\link{multinomial_impute}}
 #' 
 #' @examples \dontrun{
+#'  data(tract2221)
 #'  x_y <- multinomial_stats(tract2221[,1:4], output= "x_y")
 #'  z_Os_y <- multinomial_stats(tract2221[,1:4], output= "z_Os_y")
 #'  x_possible <- multinomial_stats(tract2221[,1:4], output= "possible.obs")
