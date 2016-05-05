@@ -70,7 +70,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss") 
   # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
   
-  alpha <- check_prior(conj_prior= conj_prior, alpha= alpha, verbose= verbose,
+  alpha <- check_prior(dat= dat, conj_prior= conj_prior, alpha= alpha, verbose= verbose,
                        outer= TRUE)
   
   # 03. EM -- get MLE for theta_y

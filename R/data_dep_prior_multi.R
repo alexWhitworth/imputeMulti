@@ -37,7 +37,7 @@ data_dep_prior_multi <- function(dat) {
 
 # helper function for checking priors in 3 main functions. 
 # reduces duplication of code
-check_prior <- function(conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
+check_prior <- function(dat, conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
                         alpha= NULL, verbose= FALSE,
                         outer= FALSE, enum_comp= NULL) {
   if (outer) { # called w/in multinomial_impute
