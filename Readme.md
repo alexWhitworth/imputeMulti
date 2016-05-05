@@ -2,7 +2,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
 ## Release notes:
-- v0.4.2 - passes R CMD check with a single NOTE (necessary)
+- v0.4.5 - CRAN submission and accepted
 - v0.4 - added example data, fixed some documentation, etc; closer to passing R CMD check
 - v0.3 - utility functions have been moved to Rcpp.
 - v0.2.2 Moving utility functions to Rcpp -- major speed improvements. In development until v0.3. Will migrate core (non-utility functions) to Rcpp for v0.4
@@ -24,6 +24,11 @@ c("none", "data.dep", "flat.prior", "non.informative")
 - If data dependent priors are chosen, calculated from approximately 20% of the observations data (assuming 20% of data are complete cases). If less than 20% of data are complete cases, all complete cases are used.
 
 ## Installation
+- From CRAN
+```
+install.packages("imputeMulti")
+```
+
 - From Github
 ```
 library("devtools");
