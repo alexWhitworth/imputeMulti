@@ -22,6 +22,15 @@
 #' @references Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. 
 #' CRC press, 1997. 
 #' @seealso \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
+#' 
+#' @examples \dontrun{
+#'  data(tract2221)
+#'  imputeEM <- multinomial_impute(tract2221[,1:4], method= "EM",
+#'                    conj_prior = "none", verbose= TRUE)
+#'  imputeDA <- multinomial_impute(tract2221[,1:4], method= "DA",
+#'                    conj_prior = "non.informative", verbose= TRUE)
+#' }
+#' 
 #' @export
 multinomial_impute <- function(dat, method= c("EM", "DA"),
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),

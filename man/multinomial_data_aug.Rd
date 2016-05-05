@@ -38,6 +38,17 @@ Implement the Data Augmentation algorithm for multvariate multinomial data given
 observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for specification
 of a Dirichlet conjugate prior.
 }
+\examples{
+\dontrun{
+ x_y <- multinomial_stats(tract2221[,1:4], output= "x_y")
+ z_Os_y <- multinomial_stats(tract2221[,1:4], output= "z_Os_y")
+ x_possible <- multinomial_stats(tract2221[,1:4], output= "possible.obs")
+
+ imputeDA_mle <- multinomial_data_aug(x_y, z_Os_y, x_possible, n_obs= nrow(tract_2221),
+                     conj_prior= "none", verbose= TRUE)
+}
+
+}
 \seealso{
 \code{\link{multinomial_em}}, \code{\link{multinomial_impute}}
 }

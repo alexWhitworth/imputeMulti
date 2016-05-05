@@ -31,6 +31,16 @@ An object of class \code{\link{imputeMulti-class}}
 Impute values for multivariate multinomial data using either EM or Data
 Augmentation.
 }
+\examples{
+\dontrun{
+ data(tract2221)
+ imputeEM <- multinomial_impute(tract2221[,1:4], method= "EM",
+                   conj_prior = "none", verbose= TRUE)
+ imputeDA <- multinomial_impute(tract2221[,1:4], method= "DA",
+                   conj_prior = "non.informative", verbose= TRUE)
+}
+
+}
 \references{
 Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. 
 CRC press, 1997.

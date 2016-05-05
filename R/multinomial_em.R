@@ -19,6 +19,16 @@
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
 #' @return An object of class \code{\link{mod_imputeMulti-class}}.
 #' @seealso \code{\link{multinomial_data_aug}}, \code{\link{multinomial_impute}}
+#' 
+#' @examples \dontrun{
+#'  x_y <- multinomial_stats(tract2221[,1:4], output= "x_y")
+#'  z_Os_y <- multinomial_stats(tract2221[,1:4], output= "z_Os_y")
+#'  x_possible <- multinomial_stats(tract2221[,1:4], output= "possible.obs")
+#'
+#'  imputeEM_mle <- multinomial_em(x_y, z_Os_y, x_possible, n_obs= nrow(tract_2221),
+#'                      conj_prior= "none", verbose= TRUE)
+#' }
+#' 
 #' @export
 multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
