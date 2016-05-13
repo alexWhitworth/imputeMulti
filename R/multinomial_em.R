@@ -50,6 +50,13 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   enum_comp <- check_prior(conj_prior= conj_prior, alpha= alpha, verbose= verbose,
                            outer= FALSE, enum_comp= enum_comp)
 
+  # pattern match marginally missing to complete
+  comp_ind <- vector("list", length= nrow(z_Os_y))
+  for (s in 1:nrow(z_Os_y)) {
+    comp_ind[[s]] <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p],
+                                      marg_to_complete= TRUE) 
+  }
+  
   # 02. E and M Steps
   #----------------------------------------------
   iter <- 0
@@ -62,14 +69,11 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       # allocate observed marginal counts proportionally to complete patterns
       # E(x_y| z_Os_y, theta) = \sum_s [E_Xsy_Zy_theta]
       # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
-      comp_ind <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p],
-                                    marg_to_complete= TRUE) # pattern match to complete
-
-      b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])
-      E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[unlist(comp_ind)] / b_Os_y # normalize
+      b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind[[s]])])
+      E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[unlist(comp_ind[[s]])] / b_Os_y # normalize
 
       # expected count += proportional marginally-observed
-      enum_comp$counts[unlist(comp_ind)] <- enum_comp$counts[unlist(comp_ind)] + E_Xsy_Zy_theta
+      enum_comp$counts[unlist(comp_ind[[s]])] <- enum_comp$counts[unlist(comp_ind[[s]])] + E_Xsy_Zy_theta
       # update log-lik
       if (b_Os_y > 0) {
         log_lik <- log_lik + z_Os_y$counts[s] * log(b_Os_y)

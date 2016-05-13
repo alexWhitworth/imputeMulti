@@ -13,7 +13,7 @@
 #' \code{conj_prior} is either \code{c("data.dep", "flat.prior")}. If \code{flat.prior}, specify 
 #' as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.
 #' @param burnin A scalar specifying the number of iterations to use as a burnin. Defaults 
-#' to \code{500}.
+#' to \code{100}.
 #' @param post_draws An integer specifying the number of draws from the posterior distribution.
 #'  Defaults to \code{1000}.
 #' @param verbose Logical. If \code{TRUE}, provide verbose output on each iteration.
@@ -33,7 +33,7 @@
 #' @export
 multinomial_data_aug <- function(x_y, z_Os_y, enum_comp, 
                                  conj_prior= c("none", "data.dep", "flat.prior", "non.informative"), 
-                                 alpha= NULL, burnin= 500, post_draws= 1000,
+                                 alpha= NULL, burnin= 100, post_draws= 1000,
                                  verbose= FALSE) {
   # check some errors
   conj_prior <- match.arg(conj_prior, several.ok= FALSE)
@@ -50,6 +50,13 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
   enum_comp <- check_prior(conj_prior= conj_prior, alpha= alpha, verbose= verbose,
                            outer= FALSE, enum_comp= enum_comp)
   
+  # pattern match marginally missing to complete
+  comp_ind <- vector("list", length= nrow(z_Os_y))
+  for (s in 1:nrow(z_Os_y)) {
+    comp_ind[[s]] <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p],
+                                           marg_to_complete= TRUE) 
+  }
+  
   # 02. I and P Steps
   #----------------------------------------------
   iter <- 0
@@ -62,15 +69,12 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
       # random allocation of observed marginal counts to complete pattern y
       # (x_y| z_Os_y, theta) = \sum_s (Xsy|Zsy, gamma)
       # (Xsy|Zy_theta) ~ M(Zsy, gamma)
-      comp_ind <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p], 
-                                    marg_to_complete= TRUE) # pattern match to complete
-      
-      b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind)])
+      b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind[[s]])])
       
       E_Xsy_Zy_theta <- as.vector(stats::rmultinom(1, size= z_Os_y$counts[s], 
-                                  prob= enum_comp$theta_y[unlist(comp_ind)] / b_Os_y)) # normalized probability
+                                  prob= enum_comp$theta_y[unlist(comp_ind[[s]])] / b_Os_y)) # normalized probability
       # expected count += random draw based on marginally-observed
-      enum_comp$counts[unlist(comp_ind)] <- enum_comp$counts[unlist(comp_ind)] + E_Xsy_Zy_theta
+      enum_comp$counts[unlist(comp_ind[[s]])] <- enum_comp$counts[unlist(comp_ind[[s]])] + E_Xsy_Zy_theta
       
       # update log-lik
       if (b_Os_y > 0) {
