@@ -5,7 +5,7 @@
 \title{Data Augmentation algorithm for multinomial data}
 \usage{
 multinomial_data_aug(x_y, z_Os_y, enum_comp, conj_prior = c("none",
-  "data.dep", "flat.prior", "non.informative"), alpha = NULL, burnin = 50,
+  "data.dep", "flat.prior", "non.informative"), alpha = NULL, burnin = 100,
   post_draws = 1000, verbose = FALSE)
 }
 \arguments{
@@ -23,7 +23,7 @@ multinomial_data_aug(x_y, z_Os_y, enum_comp, conj_prior = c("none",
 as a scalar. If \code{data.dep}, specify as a vector with key matching \code{enum_comp}.}
 
 \item{burnin}{A scalar specifying the number of iterations to use as a burnin. Defaults 
-to \code{50}.}
+to \code{100}.}
 
 \item{post_draws}{An integer specifying the number of draws from the posterior distribution.
 Defaults to \code{1000}.}

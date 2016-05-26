@@ -51,11 +51,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
                            outer= FALSE, enum_comp= enum_comp)
   
   # pattern match marginally missing to complete
-  comp_ind <- vector("list", length= nrow(z_Os_y))
-  for (s in 1:nrow(z_Os_y)) {
-    comp_ind[[s]] <- marg_complete_compare(z_Os_y[s, -z_p], enum_comp[, 1:count_p],
-                                           marg_to_complete= TRUE) 
-  }
+  comp_ind <- search_z_Os_y(z_Os_y, enum_comp[,1:count_p])
   
   # 02. I and P Steps
   #----------------------------------------------

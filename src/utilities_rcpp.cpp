@@ -43,7 +43,7 @@ List marg_comp_compare (IntegerMatrix& marg, IntegerMatrix& complete, const bool
         LogicalVector eq;
         for (int k = 0; k < ncol_c; k++) {
           // check for missing values
-          if (comp[k] != NA_LOGICAL && comp2[k] != NA_LOGICAL) {
+          if (comp[k] != NA_INTEGER && comp2[k] != NA_INTEGER) {
             eq.push_back(comp[k] == comp2[k]);
           }
         }
@@ -62,7 +62,7 @@ List marg_comp_compare (IntegerMatrix& marg, IntegerMatrix& complete, const bool
         LogicalVector eq;
         for (int k = 0; k < ncol_c; k++) {
           // check for missing values
-          if (comp[k] != NA_LOGICAL && comp2[k] != NA_LOGICAL) {
+          if (comp[k] != NA_INTEGER && comp2[k] != NA_INTEGER) {
             eq.push_back(comp[k] == comp2[k]);
           }
         }
@@ -72,3 +72,4 @@ List marg_comp_compare (IntegerMatrix& marg, IntegerMatrix& complete, const bool
     return wrap(out);
   }
 }
+
