@@ -50,6 +50,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   #   enumerate observed and missing patterns
   #----------------------------------------------
   mc <- match.call()
+  l_dots <- eval(substitute(alist(...))); n_l <- names(l_dots)
   p <- ncol(dat)
   
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
@@ -63,12 +64,18 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   #----------------------------------------------
   dat_comp <- dat[stats::complete.cases(dat),]
   dat_miss <- dat[!stats::complete.cases(dat),]
-  # complete data sufficient statistics
+  
   if (verbose == TRUE) print("Calculating observed data sufficient statistics.")
-  x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no") 
-  # missing data marginal sufficient statistics
-  z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss") 
-  # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S} 
+  
+  # complete data sufficient statistics & missing data marginal sufficient statistics
+  if ("parallel" %in% n_l) {
+    x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no", parallel= l_dots$parallel) 
+    z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss", parallel= l_dots$parallel) 
+    # rownames(z_Os_y) <- 1:nrow(z_Os_y) # ID's for missingness patterns {S}   
+  } else {
+    x_y     <- count_levels(dat_comp, enum_list= enum_comp, hasNA= "no") 
+    z_Os_y  <- count_levels(dat_miss, enum_list= enum_miss, hasNA= "count.miss") 
+  }
   
   alpha <- check_prior(dat= dat, conj_prior= conj_prior, alpha= alpha, verbose= verbose,
                        outer= TRUE)
@@ -76,7 +83,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # 03. EM -- get MLE for theta_y
     # NOTE:: need to implement data augmentation option
   #----------------------------------------------
-  l_dots <- eval(substitute(alist(...)))
+  
   # EM
   if (method == "EM") {
     if (length(l_dots) == 0) {
@@ -85,7 +92,6 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
                                       n_obs= nrow(dat), conj_prior= conj_prior, 
                                       alpha= alpha, verbose= verbose) 
     } else { # specify tol/max_iter
-      n_l <- names(l_dots)
       if ((length(n_l) == 2 & all(c("max_iter", "tol") %in% n_l))) {
         mle_multinomial <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                                           n_obs= nrow(dat), conj_prior= conj_prior, 
@@ -114,7 +120,6 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
       mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                                               conj_prior= conj_prior, alpha= alpha, verbose= verbose) 
     } else { # specify burnin / post_draws
-      n_l <- names(l_dots)
       if (length(n_l) == 2 & all(c("burnin", "post_draws") %in% n_l)) {
         mle_multinomial <- multinomial_data_aug(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                                                 conj_prior= conj_prior, alpha= alpha, verbose= verbose,

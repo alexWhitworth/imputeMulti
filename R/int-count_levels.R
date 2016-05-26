@@ -25,11 +25,11 @@ fact_to_int <- function(f) {
   # \code{"no"} - there are no missing values, count observed patterns
   # \code{"count.obs"} - there are missing values, count the marginally observed patterns
   # \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
-# @param parallel Logical. Do you wish to parallelize the code? Defaults to \code{TRUE}
+# @param parallel Logical. Do you wish to parallelize the code? Defaults to \code{FALSE}
 # @param leave_cores How many cores do you wish to leave open to other processing?
 #
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss"),
-                         parallel= TRUE, leave_cores= 1L) {
+                         parallel= FALSE, leave_cores= 1L) {
   # parameter checking
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   if (parallel == TRUE) {
