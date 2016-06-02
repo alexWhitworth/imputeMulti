@@ -35,12 +35,6 @@ create_search_query <- function(df, row, var_names) {
   return(q)
 }
 
-# function to get the character mapping from a factor type
-get_level_text <- function(var, val) {
-  lvls <- levels(var)
-  return(lvls[val])
-}
-
 
 
 # nnodes <- min(nrow(dat2), parallel::detectCores() - leave_cores)
@@ -53,32 +47,34 @@ get_level_text <- function(var, val) {
 # parallel::stopCluster(cl)
 
 
-# count_sumStats <- function(x_possible, dat, hasNA= c("no", "count.obs", "count.miss")) {
-#   # parameter checking
-#   hasNA <- match.arg(hasNA, several.ok= FALSE)
-#   if (ncol(dat) != ncol(x_possible)) stop("ncol(dat) and ncol(enum_list) must match.")
-#   
-#   # setup database
-#   x_p <- RSQLite::dbConnect(RSQLite::SQLite(), ":memory:")
-#   RSQLite::dbWriteTable(x_p, "dat", dat)
-#   RSQLite::dbGetQuery(x_p, paste0("create index idx on dat (", paste(names(dat),collapse=", "), ")"))
-#   nm <- names(x_possible)
-#   x_possible$counts <- 0
-#   
-#   for (i in 1:nrow(x_possible)) {
-#     x_possible$counts[i] <-  RSQLite::dbGetQuery(x_p, create_count_query(x_possible, x_possible[i,], nm))$cnt
-#   }
-#   return(x_possible[!is.na(x_possible$counts) & x_possible$counts > 0,])
-# }
-# 
-# create_count_query <- function(df, row, var_names) {
-#   nx <- length(row)-1
-#   q <- paste0("select count(*) as cnt from dat where ", var_names[1], "= '", 
-#               get_level_text(get(var_names[1], as.environment(df)) , as.integer(row[1])),"'")
-#   for (i in 2:nx) {
-#     q <- paste0(q, "and ", var_names[i], "= '", 
-#                 get_level_text(get(var_names[i], as.environment(df)) , as.integer(row[i])), "'")
-#   }
-#   return(q)
-# }
+count_sumStats <- function(x_possible, dat, hasNA= c("no", "count.obs", "count.miss")) {
+  # parameter checking
+  hasNA <- match.arg(hasNA, several.ok= FALSE)
+  if (ncol(dat) != ncol(x_possible)) stop("ncol(dat) and ncol(enum_list) must match.")
+  
+  ## 0. Pre-processing: convert factors to integers
+  dat <- data.frame(do.call("cbind", lapply(dat, fact_to_int)))
+  x_possible <- data.frame(do.call("cbind", lapply(x_possible, fact_to_int)))
+
+  # setup database
+  x_p <- RSQLite::dbConnect(RSQLite::SQLite(), ":memory:")
+  RSQLite::dbWriteTable(x_p, "dat", dat)
+  RSQLite::dbGetQuery(x_p, paste0("create index idx on dat (", paste(names(dat),collapse=", "), ")"))
+  nm <- names(x_possible)
+  x_possible$counts <- 0
+
+  for (i in 1:nrow(x_possible)) {
+    x_possible$counts[i] <-  RSQLite::dbGetQuery(x_p, create_count_query(x_possible, x_possible[i,], nm))$cnt
+  }
+  return(x_possible[!is.na(x_possible$counts) & x_possible$counts > 0,])
+}
+
+create_count_query <- function(df, row, var_names) {
+  nx <- length(row)-1
+  q <- paste0("select count(*) as cnt from dat where ", var_names[1], "= '", row[1],"'")
+  for (i in 2:nx) {
+    q <- paste0(q, "and ", var_names[i], "= '", row[i], "'")
+  }
+  return(q)
+}
 

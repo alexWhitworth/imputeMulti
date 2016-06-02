@@ -14,6 +14,12 @@ fact_to_int <- function(f) {
     ifelse(is.na(i), NA, which(i == l))})))
 }
 
+# function to get the character mapping from a factor type
+get_level_text <- function(var, val) {
+  lvls <- levels(var)
+  return(lvls[val])
+}
+
 #### internal
 # @title Count Levels
 # @description Given a dataset and a data.frame of comparison patterns,
@@ -86,4 +92,3 @@ marg_complete_compare <- function(marg, complete, marg_to_complete= FALSE) {
   .Call('imputeMulti_marg_comp_compare', PACKAGE = 'imputeMulti',
         marg, complete, marg_to_complete)
 }
-
