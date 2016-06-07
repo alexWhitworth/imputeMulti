@@ -50,6 +50,7 @@ multinomial_data_aug <- function(x_y, z_Os_y, enum_comp,
   enum_comp <- check_prior(conj_prior= conj_prior, alpha= alpha, verbose= verbose,
                            outer= FALSE, enum_comp= enum_comp)
   
+  if (verbose) print("Setting up Iteration 1.")
   # pattern match marginally missing to complete
   comp_ind <- search_z_Os_y(z_Os_y, enum_comp[,1:count_p])
   

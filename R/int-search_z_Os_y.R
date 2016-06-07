@@ -5,6 +5,10 @@
 # @param z_Os_y the marginally missing observations
 # @param x_possible the set of possible fully observed observations
 search_z_Os_y <- function(z_Os_y, x_possible) {
+  if (is.null(names(x_possible)) | is.null(names(z_Os_y))) stop("both arguments / parameters must have names.")
+  if (any(is.na(names(x_possible))) | any(is.na(names(z_Os_y)))) 
+    stop("names may not be NA.")
+  
   ## setup output list and SQLite database
   search_out <- vector("list", length= nrow(z_Os_y))
   
@@ -28,11 +32,14 @@ create_search_query <- function(df, row, var_names) {
   n_na <- length(idx)
   q <- paste0("select rownames from x_possible where ", var_names[ idx[1] ], "= '", 
               get_level_text(get(var_names[ idx[1] ], as.environment(df)) , as.integer(row[ idx[1] ])),"'")
-  for (i in 2:n_na) {
-    q <- paste0(q, "and ", var_names[idx[i]], "= '", 
-                get_level_text(get(var_names[ idx[i] ], as.environment(df)) , as.integer(row[ idx[i] ])), "'")
+  if (n_na == 1) return(q)
+  else {
+    for (i in 2:n_na) {
+      q <- paste0(q, "and ", var_names[idx[i]], "= '", 
+                  get_level_text(get(var_names[ idx[i] ], as.environment(df)) , as.integer(row[ idx[i] ])), "'")
+    }
+    return(q)
   }
-  return(q)
 }
 
 
@@ -72,9 +79,12 @@ count_sumStats <- function(x_possible, dat, hasNA= c("no", "count.obs", "count.m
 create_count_query <- function(df, row, var_names) {
   nx <- length(row)-1
   q <- paste0("select count(*) as cnt from dat where ", var_names[1], "= '", row[1],"'")
-  for (i in 2:nx) {
-    q <- paste0(q, "and ", var_names[i], "= '", row[i], "'")
+  if (nx == 1) return(q)
+  else {
+    for (i in 2:nx) {
+      q <- paste0(q, "and ", var_names[i], "= '", row[i], "'")
+    }
+    return(q)
   }
-  return(q)
 }
 
