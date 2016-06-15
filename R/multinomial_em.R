@@ -43,7 +43,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
 
   mc <- match.call()
   z_p <- ncol(z_Os_y)
-  count_p <- ncol(enum_comp)
+  
 
   # 01. Merge in prior if supplied; calculate if requested
   #----------------------------------------------
@@ -52,7 +52,8 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
 
   if (verbose) print("Setting up Iteration 1.")
   # pattern match marginally missing to complete
-  comp_ind <- search_z_Os_y(z_Os_y, enum_comp[,1:count_p])
+  no_col_XP <- which(names(enum_comp) %in% c("alpha", "theta_y"))
+  comp_ind <- search_z_Os_y(z_Os_y, enum_comp[,-no_col_XP])
   
   # 02. E and M Steps
   #----------------------------------------------

@@ -3,6 +3,7 @@
 export(data_dep_prior_multi)
 export(is.imputeMulti)
 export(is.mod_imputeMulti)
+export(merge_imputed)
 export(multinomial_data_aug)
 export(multinomial_em)
 export(multinomial_impute)

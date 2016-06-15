@@ -16,6 +16,10 @@
      \code{hs_grad} high school graduate; \code{some_col} completed some college but did not graduate;
      \code{assoc_dec} completed an associates degree; \code{ba_deg} obtained a bachelors degree;
      \code{grad_deg} obtained a graduate or professional degree}
+   \item{emp_status}{The individuals employment status. Takes one of 3 levels:
+     \code{employed} individual is in the labor force and employed; 
+     \code{unemployed} individual is in the labor force and unemployed;
+     \code{not_in_labor_force} individual is not in the labor force}
    \item{nativity}{The individual's nativity status. Takes one of 4 values: \code{born_state_residence}
      born in the state of residence; \code{born_other_state} born in another US state; \code{born_out_us}
      a US citizen born outside the US; \code{foreigner} foreign born}
