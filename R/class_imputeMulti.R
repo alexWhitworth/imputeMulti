@@ -1,4 +1,28 @@
 
+# inheritance checks
+
+#' @title Check mod_imputeMulti Class
+#' @description Function that checks if the target object is a \code{mod_imputeMulti} object.
+#' @param x any R object.
+#' @return Returns \code{TRUE} if its argument has class "mod_imputeMulti" among its classes and
+#' \code{FALSE} otherwise.
+#' @export
+is.mod_imputeMulti <- function(x) {
+  inherits(x, "mod_imputeMulti")
+}
+
+
+#' @title Check imputeMulti Class
+#' @description Function that checks if the target object is a \code{imputeMulti} object.
+#' @param x any R object.
+#' @return Returns \code{TRUE} if its argument has class "imputeMulti" among its classes and
+#' \code{FALSE} otherwise.
+#' @export
+is.imputeMulti <- function(x) {
+  inherits(x, "imputeMulti")
+}
+###########################################################
+
 #' Class "mod_imputeMulti"
 #'  
 #' @name mod_imputeMulti-class
@@ -45,44 +69,6 @@ setClass("mod_imputeMulti",
 )
   
 
-###########################################################
-## Methods
-###########################################################
-## Print
-
-show.mod_imputeMulti <- function(object) {
-  cat("\n Call: \n", paste(deparse(object@mle_call)),
-      "\n Method: ", object@method,
-      "\n\n Iterations: ", object@mle_iter,
-      "\n\n Log-Likelihood: ", object@mle_log_lik)
-}
-
-# @title Print mod_imputeMulti class objects
-# @description print method for class "mod_imputeMulti"
-# @param object an object of class "mod_imputeMulti"
-# @param ... further arguments passed to or from other methods.
-# @exportMethod show
-# @export
-# setMethod("show", signature= "mod_imputeMulti",
-#           def= show.mod_imputeMulti)
-
-
-## Summary
-setGeneric("summary")
-# @export
-summary.mod_imputeMulti <- function(object, ...) {
-  print(object)
-  
-  summary.data.frame(object@mle_x_y[, c("alpha", "theta_y")])
-}
-
-#' @title Summarizing mod_imputMulti objects
-#' @description summary method for class "mod_imputeMulti"
-#' @param object an object of class "mod_imputeMulti"
-#' @param ... further arguments passed to or from other methods.
-#' @exportMethod summary
-setMethod("summary", signature="mod_imputeMulti", def=summary.mod_imputeMulti)
-
 
 #' Class "imputeMulti" 
 #'  
@@ -127,69 +113,3 @@ setClass("imputeMulti",
 
 
 
-###########################################################
-## Methods
-###########################################################
-## Print
-
-show.imputeMulti <- function(object) {
-  cat("\n Global Call: \n", paste(deparse(object@Gcall)),
-      "\n Call: \n", paste(deparse(object@mle_call)),
-      "\n Method: ", object@method,
-      "\n\n Iterations: ", object@mle_iter,
-      "\n\n Log-Likelihood: ", object@mle_log_lik,
-      "\n Number Missing: ", object@nmiss)
-}
-
-# @title Print imputeMulti class objects
-# @description print method for class "imputeMulti"
-# @param object an object of class "imputeMulti"
-# @param ... further arguments passed to or from other methods.
-# @exportMethod show
-# @export
-# setMethod("show", signature= "imputeMulti",
-#   def= show.imputeMulti)
-
-## Summary
-setGeneric("summary")
-# @export
-summary.imputeMulti <- function(object, ...) {
-  print(object)
-  
-  summary(object@mle_x_y[, c("alpha", "theta_y")])
-  
-  lapply(object@data, dim)
-}
-
-#' @title Summarizing imputMulti objects
-#' @description summary method for class "imputeMulti"
-#' @param object an object of class "imputeMulti"
-#' @param ... further arguments passed to or from other methods.
-#' @exportMethod summary
-setMethod("summary", signature= "imputeMulti",
-  summary.imputeMulti)
-
-
-###########################################################
-# inheritance checks
-
-#' @title Check mod_imputeMulti Class
-#' @description Function that checks if the target object is a \code{mod_imputeMulti} object.
-#' @param x any R object.
-#' @return Returns \code{TRUE} if its argument has class "mod_imputeMulti" among its classes and
-#' \code{FALSE} otherwise.
-#' @export
-is.mod_imputeMulti <- function(x) {
-  inherits(x, "mod_imputeMulti")
-}
-
-
-#' @title Check imputeMulti Class
-#' @description Function that checks if the target object is a \code{imputeMulti} object.
-#' @param x any R object.
-#' @return Returns \code{TRUE} if its argument has class "imputeMulti" among its classes and
-#' \code{FALSE} otherwise.
-#' @export
-is.imputeMulti <- function(x) {
-  inherits(x, "imputeMulti")
-}
