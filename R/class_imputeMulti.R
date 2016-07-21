@@ -43,9 +43,6 @@ is.imputeMulti <- function(x) {
 #' @section Objects from the class: Objects are created by calls to
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 #' \code{\link{multinomial_data_aug}}.
-#' @section Methods:
-# \code{\link{show,mod_imputeMulti-method}}
-#' \code{\link{summary,mod_imputeMulti-method}}
 #' @seealso \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 #' \code{\link{multinomial_data_aug}}
 #' @exportClass mod_imputeMulti
@@ -92,9 +89,6 @@ setClass("mod_imputeMulti",
 #' @section Objects from the class: Objects are created by calls to
 #' \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 #' \code{\link{multinomial_data_aug}}.
-#' @section Methods:
-# \code{\link{show,imputeMulti-method}}
-#' \code{\link{summary,imputeMulti-method}}
 #' @seealso \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 #' \code{\link{multinomial_data_aug}}
 #' @exportClass imputeMulti

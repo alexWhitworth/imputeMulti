@@ -2,11 +2,6 @@
 
 export(data_dep_prior_multi)
 export(get_imputations)
-export(get_iterations)
-export(get_logLik)
-export(get_method)
-export(get_parameters)
-export(get_prior)
 export(is.imputeMulti)
 export(is.mod_imputeMulti)
 export(merge_imputed)
