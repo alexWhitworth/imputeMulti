@@ -57,6 +57,9 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     if (grepl("Windows", utils::sessionInfo()$running)) {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
     else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
     
+    # 8/9/2016 -- needed since clusterExport does not work with non exported functions
+    # See: http://stackoverflow.com/questions/38836341
+    count_compare <- imputeMulti:::count_compare 
     parallel::clusterExport(cl, varlist= c("count_compare"))
     
     temp <- do.call("cbind", parallel::clusterApply(cl,
