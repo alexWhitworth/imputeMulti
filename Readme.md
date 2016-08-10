@@ -2,6 +2,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
 ## Release notes:
+- v0.6.2 - added several methods; vignette forthcoming
 - v0.5.0 - imports RSQLite. Huge speed improvements
 - v0.4.5 - CRAN submission and accepted
 - v0.4 - added example data, fixed some documentation, etc; closer to passing R CMD check
@@ -14,7 +15,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 - Methods are implemented in R. A future version will migrate the core algorithms to C++ / RCPP for performance.
 
 ## Features:
-- Uses S4 classes throughout.
+- Uses S4 classes.
 - imputation methods for multivariate multinomial data.
 - Imputation of the summary statistics is done using EM and data augmentation
 - Imputation of the observation level data is done via MLE
@@ -49,6 +50,10 @@ test_em <- multinomial_impute(tract2221[,1:4], method= "EM",
 
 test_da <- multinomial_impute(tract2221[,1:4], method= "DA",
                                  conj_prior = "non.informative", verbose= TRUE)
+
+# extract imputed values and parameter estimates
+get_imputations(test_em)
+get_parameters(test_em)
 ```
 
 ## References:
