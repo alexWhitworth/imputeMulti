@@ -2,6 +2,7 @@ imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
 ## Release notes:
+- v0.6.4 - minor changes to example dataset
 - v0.6.2 - added several methods; vignette forthcoming
 - v0.5.0 - imports RSQLite. Huge speed improvements
 - v0.4.5 - CRAN submission and accepted
