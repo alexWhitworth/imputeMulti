@@ -2,3 +2,4 @@
 .Rhistory
 .RData
 imputeMulti_0.0.2.zip
+tests/testthat/gen_tract2221.R

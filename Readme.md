@@ -1,19 +1,10 @@
 imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
-## Release notes:
-- v0.6.4 - minor changes to example dataset
-- v0.6.2 - added several methods; vignette forthcoming
-- v0.5.0 - imports RSQLite. Huge speed improvements
-- v0.4.5 - CRAN submission and accepted
-- v0.4 - added example data, fixed some documentation, etc; closer to passing R CMD check
-- v0.3 - utility functions have been moved to Rcpp.
-- v0.2.2 Moving utility functions to Rcpp -- major speed improvements. In development until v0.3. Will migrate core (non-utility functions) to Rcpp for v0.4
-- v0.2 Added parallel functionality.
-- v01.2 all unit tests passed, minor debugging.
-- V0.1 unit tests for package written and passed.
-- V0.0.2 includes methods for EM and Data Augmentation
-- Methods are implemented in R. A future version will migrate the core algorithms to C++ / RCPP for performance.
+[![Build Status](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/alexWhitworth/imputeMulti/badge.svg?branch=master)](https://coveralls.io/github/alexWhitworth/imputeMulti?branch=master)
+
+[![CRAN version](http://www.r-pkg.org/badges/version/imputeMulti)](https://cran.r-project.org/package=imputeMulti)
 
 ## Features:
 - Uses S4 classes.
@@ -60,9 +51,3 @@ get_parameters(test_em)
 ## References:
 1. Schafer, Joseph L. Analysis of incomplete multivariate data. Chapter 7. CRC press, 1997.
 2. Darnieder, William Francis. Bayesian methods for data-dependent priors. Diss. The Ohio State University, 2011.
-
-
-
-
-
-
