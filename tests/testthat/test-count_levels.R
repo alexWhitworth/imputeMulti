@@ -77,10 +77,10 @@ test_that("count levels works with all missing data options... parallel = TRUE",
   dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
 
-  cnt.comp <- count_levels(dat[complete.cases(dat),], enum_list= enum,
+  cnt.comp <- imputeMulti:::count_levels(dat[complete.cases(dat),], enum_list= enum,
                            hasNA= "no", parallel= TRUE)
-  cnt.ob <- count_levels(dat, enum_list= enum, hasNA= "count.obs", parallel= TRUE)
-  cnt.mis <- count_levels(dat[!complete.cases(dat),], enum_list= enum,
+  cnt.ob <- imputeMulti:::count_levels(dat, enum_list= enum, hasNA= "count.obs", parallel= TRUE)
+  cnt.mis <- imputeMulti:::count_levels(dat[!complete.cases(dat),], enum_list= enum,
                           hasNA= "count.miss", parallel= TRUE)
 
   ### no missing data tests
@@ -122,16 +122,16 @@ test_that("(parallel = TRUE) == (parallel = FALSE)", {
 
   enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
   # parallel = TRUE
-  cnt.comp1 <- count_levels(dat[complete.cases(dat),], enum_list= enum,
+  cnt.comp1 <- imputeMulti:::count_levels(dat[complete.cases(dat),], enum_list= enum,
                            hasNA= "no", parallel= TRUE)
-  cnt.ob1 <- count_levels(dat, enum_list= enum, hasNA= "count.obs", parallel= TRUE)
-  cnt.mis1 <- count_levels(dat, enum_list= enum, hasNA= "count.miss", parallel= TRUE)
+  cnt.ob1 <- imputeMulti:::count_levels(dat, enum_list= enum, hasNA= "count.obs", parallel= TRUE)
+  cnt.mis1 <- imputeMulti:::count_levels(dat, enum_list= enum, hasNA= "count.miss", parallel= TRUE)
 
   # parallel = FALSE
-  cnt.comp2 <- count_levels(dat[complete.cases(dat),], enum_list= enum,
+  cnt.comp2 <- imputeMulti:::count_levels(dat[complete.cases(dat),], enum_list= enum,
                            hasNA= "no", parallel= FALSE)
-  cnt.ob2 <- count_levels(dat, enum_list= enum, hasNA= "count.obs", parallel= FALSE)
-  cnt.mis2 <- count_levels(dat, enum_list= enum, hasNA= "count.miss", parallel= FALSE)
+  cnt.ob2 <- imputeMulti:::count_levels(dat, enum_list= enum, hasNA= "count.obs", parallel= FALSE)
+  cnt.mis2 <- imputeMulti:::count_levels(dat, enum_list= enum, hasNA= "count.miss", parallel= FALSE)
 
   ### equality with parallel options
   expect_equal(cnt.comp1, cnt.comp2)
