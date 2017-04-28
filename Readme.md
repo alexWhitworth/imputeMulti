@@ -2,8 +2,8 @@ imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
 [![Build Status](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/alexWhitworth/imputeMulti/badge.svg)](https://coveralls.io/github/alexWhitworth/imputeMulti)
-[![codecov](https://codecov.io/gh/alexWhitworth/imputeMulti/branch/master/graph/badge.svg)](https://codecov.io/gh/alexWhitworth/imputeMulti)
+[![Coverage Status](https://coveralls.io/repos/github/alexWhitworth/imputeMulti/badge.svg?branch=master)](https://coveralls.io/github/alexWhitworth/imputeMulti?branch=master)
+
 [![CRAN version](http://www.r-pkg.org/badges/version/imputeMulti)](https://cran.r-project.org/package=imputeMulti)
 
 ## Features:
