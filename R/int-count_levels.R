@@ -32,14 +32,14 @@ get_level_text <- function(var, val) {
   # \code{"count.obs"} - there are missing values, count the marginally observed patterns
   # \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
 # @param parallel Logical. Do you wish to parallelize the code? Defaults to \code{FALSE}
-# @param leave_cores How many cores do you wish to leave open to other processing?
+# @param cores How many cores do you wish to leave open to other processing?
 #
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss"),
-                         parallel= FALSE, leave_cores= 1L) {
+                         parallel= FALSE, cores = getOption("mc.cores", parallel::detectCores() - 1)) {
   # parameter checking
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   if (parallel == TRUE) {
-    if (leave_cores < 0 | leave_cores %% 1 != 0) stop("leave_cores must be an integer >= 0")
+    if (cores < 0 || cores %% 1 != 0) stop("cores must be an integer >= 0")
   }
   if (ncol(dat) != ncol(enum_list)) stop("ncol(dat) and ncol(enum_list) must match.")
 
@@ -52,15 +52,14 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     enum_list$counts <- count_compare(x= e2, dat= dat2, hasNA= hasNA)
   } else {
     # resolve edge case when nnodes > nrow(dat2)
-    nnodes <- min(nrow(dat2), parallel::detectCores() - leave_cores)
+    nnodes <- min(nrow(dat2), cores)
     
     if (grepl("Windows", utils::sessionInfo()$running)) {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
     else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
     
     # 8/9/2016 -- needed since clusterExport does not work with non exported functions
     # See: http://stackoverflow.com/questions/38836341
-    count_compare <- imputeMulti:::count_compare 
-    parallel::clusterExport(cl, varlist= c("count_compare"), envir= 1)
+    parallel::clusterCall(cl, assign, "count_compare", count_compare, envir = .GlobalEnv)
     
     temp <- do.call("cbind", parallel::clusterApply(cl,
           # split data across clusters, share: comparison (e2) and hasNA
