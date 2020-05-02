@@ -1,11 +1,5 @@
 #include <Rcpp.h>
-#include <iostream>
-#include <cmath>
-#include <string>
-
 using namespace Rcpp;
-using namespace std;
-
 
 //' @title count compare (internal only)
 //' @description Given a dataset and a data.frame of comparison patterns,

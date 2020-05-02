@@ -1,10 +1,6 @@
 #include <Rcpp.h>
-#include <iostream>
-#include <cmath>
-#include <string>
-
 using namespace Rcpp;
-using namespace std;
+// using namespace std;
 
 //' @title Calculate the sup of L1 distance between x and y
 //' @description sup of L1 distance between x and y
@@ -17,7 +13,7 @@ double supDistC (const NumericVector& x, const NumericVector& y) {
   
   double sup = -1.0;
   for (int i = 0; i < nx; i++) {
-    if (abs(x[i] - y[i]) > sup) sup = abs(x[i] - y[i]);
+    if (std::abs(x[i] - y[i]) > sup) sup = std::abs(x[i] - y[i]);
   }
   return sup;
 }
@@ -34,7 +30,7 @@ List xy_compare (IntegerMatrix& mat_x, IntegerMatrix& mat_y) {
 
   // initialize variables
   int ncol_y = mat_y.ncol(), nrow_y = mat_y.nrow(), nrow_x = mat_x.nrow(); 
-  vector<vector<int> > out(nrow_y); // output vector of vectors, will be coerced to list
+  std::vector<std::vector<int> > out(nrow_y); // output vector of vectors, will be coerced to list
   
   // iterate through -- very inefficient implementation
   for (int ci = 0; ci < nrow_y; ci++) {
