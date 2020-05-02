@@ -1,4 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 Readme.Md
-
+.coveralls.yml
+.travis.yml
+tests/testthat/gen_tract2221.R

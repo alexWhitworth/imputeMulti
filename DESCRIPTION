@@ -10,7 +10,7 @@ Imports:
     gtools (>= 3.3),
     methods,
     parallel,
-    Rcpp,
+    Rcpp (>= 0.11.4),
     DBI (>= 0.4),
     RSQLite (>= 1.0)
 License: GPL-3
@@ -27,6 +27,7 @@ Collate:
     'class_imputeMulti.R'
     'data-tract2221.R'
     'data_dep_prior_multi.R'
+    'imputeMulti-package.R'
     'int-count_levels.R'
     'int-impute_multinomial.R'
     'int-search_z_Os_y.R'

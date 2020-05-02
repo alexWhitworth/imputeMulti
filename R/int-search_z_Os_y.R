@@ -45,8 +45,8 @@ create_search_query <- function(df, row, var_names) {
 
 
 # nnodes <- min(nrow(dat2), parallel::detectCores() - leave_cores)
-# if (grepl("Windows", utils::sessionInfo()$running)) {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
-# else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
+#   if (.Platform$OS.type != "unix") {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
+#   else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
 # 
 # comp_ind <- parallel::clusterApply(cl, x= splitRows(z_Os_y, nnodes), fun= search_z_Os_y,
 #                                      x_possible= x_possible)

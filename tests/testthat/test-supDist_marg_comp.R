@@ -18,7 +18,7 @@ test_that("supDist errors and results", {
 
 
 #--------------------------------------
-context("int- marg_compare works")
+context("int- xy_compare works")
 
 test_that("errors work; return type is correct", {
   x <- 1:5; dim(x) <- c(1,5)
@@ -27,8 +27,8 @@ test_that("errors work; return type is correct", {
   x2 <- rbind(x2,x2)
   x3 <- x2[,1:5]
   
-  expect_error(marg_complete_compare(x, x2, FALSE))
-  expect_error(marg_complete_compare(x, x2, TRUE))
+  expect_error(mx_my_compare(x, x2, FALSE))
+  expect_error(mx_my_compare(x, x2, TRUE))
   
   expect_true(is.list(marg_comp_compare(x, x3, FALSE)))
   expect_true(is.list(marg_comp_compare(x, x3, TRUE)))
@@ -36,7 +36,7 @@ test_that("errors work; return type is correct", {
   expect_equal(length(marg_comp_compare(x, x3, TRUE)), 2)
 })
 
-test_that("marg_compare works correctly", {
+test_that("xy_compare works correctly", {
   # set up
   set.seed(125)
   x1 <- factor(sample(1:5, size=10, replace= TRUE))
@@ -47,17 +47,15 @@ test_that("marg_compare works correctly", {
   
   dat2 <- dat <- c(x1, x2, x3, x4, x5)
   # insert missing values
-  mis.ind <- sample(1:length(dat), size= 10, replace= FALSE)
-  dat[mis.ind] <- NA
-  rm(x1,x2,x3,x4,x5, mis.ind)
   dim(dat)<- dim(dat2) <- c(10, 5)
+  dat <- t(apply(dat, 1, function(x) {x[sample.int(length(x),1)] <- NA; return(x)}))
+  rm(x1,x2,x3,x4,x5)
   
-  expect_equal(unlist(marg_comp_compare(dat, dat, TRUE)), 1:10)
-  expect_equal(unlist(marg_comp_compare(dat, dat, FALSE)), 1:10)
-  expect_equal(unlist(marg_comp_compare(dat2, dat2, TRUE)), 1:10)
-  expect_equal(unlist(marg_comp_compare(dat2, dat2, FALSE)), 1:10)
-  expect_equal(unlist(marg_comp_compare(dat, dat2, TRUE)), 1:10)
-  expect_equal(unlist(marg_comp_compare(dat, dat2, FALSE)), 1:10)
+  
+  expect_equal(unlist(imputeMulti:::xy_compare(dat, dat)), 1:10)
+  expect_equal(unlist(imputeMulti:::xy_compare(dat2, dat2)), 1:10)
+  expect_equal(unlist(imputeMulti:::xy_compare(dat, dat2)), 1:10)
+  expect_equal(unlist(imputeMulti:::xy_compare(dat2, dat)), 1:10)
   
   set.seed(125)
   dat2 <- data.frame(x1= factor(sample(1:5, size=10, replace= TRUE)),
@@ -74,13 +72,10 @@ test_that("marg_compare works correctly", {
   dat[c(7,9),4] <- NA
   dat[c(4,10),5] <- NA
   
-  expect_equal(unlist(marg_complete_compare(dat, dat, TRUE)), c(1:10,9,10))
-  expect_equal(unlist(marg_complete_compare(dat, dat, FALSE)), c(1:10,9,10))
-  expect_equal(unlist(marg_complete_compare(dat2, dat2, TRUE)), 1:10)
-  expect_equal(unlist(marg_complete_compare(dat2, dat2, FALSE)), 1:10)
-  expect_equal(unlist(marg_complete_compare(dat, dat2, TRUE)), 1:10)
-  expect_equal(unlist(marg_complete_compare(dat, dat2, FALSE)), 1:10)
-  
+  expect_equal(unlist(imputeMulti:::mx_my_compare(dat, dat)), c(1:2,5,3,4,2,5:10))
+  expect_equal(unlist(imputeMulti:::mx_my_compare(dat2, dat2)), 1:10)
+  expect_equal(unlist(imputeMulti:::mx_my_compare(dat, dat2)), 1:10)
+  expect_equal(unlist(imputeMulti:::mx_my_compare(dat2, dat)), 1:10)
 })
 
 

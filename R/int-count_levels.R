@@ -1,4 +1,5 @@
 
+
 # [4/2016] Moving supDist wrapper to R -- for R CMD Check
 # wrapper to supDistC to move error checking outside of C++
 supDist <- function(x,y) {
@@ -54,7 +55,7 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     # resolve edge case when nnodes > nrow(dat2)
     nnodes <- min(nrow(dat2), cores)
     
-    if (grepl("Windows", utils::sessionInfo()$running)) {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
+    if (.Platform$OS.type != "unix") {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
     else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
     
     # 8/9/2016 -- needed since clusterExport does not work with non exported functions
@@ -76,23 +77,55 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
 }
 
 
-# @description Compare an array with missing values \code{marg} and an array
-# with complete values \code{complete}. Return matching indices. Can compare
-# either marginal-to-complete or complete-to-marginal.
-# @param marg A two dimensional array with missing values
-# @param complete A two dimensional array without missing values
-# @param marg_to_comp Logical. Do you wish to compare marginal values to
-# complete values/matches? Defaults to \code{FALSE} ie- complete values compared
-# to marginal matches.
+# @description Compare two two-dimensional arrays (\code{mat_x}, \code{mat_y}), where \code{mat_x}
+# permits missing values. Return a \code{list} of length \code{nrow(mat_x)} such that each list
+# element contains a vector of row indices from \code{mat_y} with row-equivalence of the non
+# missing values.
+# @param mat_x A two dimensional array which may contain missing values
+# @param mat_y A two dimensional array without missing values
 # @return A \code{list} of matches.
-marg_complete_compare <- function(marg, complete, marg_to_complete= FALSE) {
+mx_my_compare <- function(mat_x, mat_y) {
+  if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
   ## 0. Pre-processing: convert factors to integers
-  marg <- do.call("cbind", lapply(marg, fact_to_int))
-  complete <- do.call("cbind", lapply(complete, fact_to_int))
+  mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
+  mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
   
-  if (ncol(marg) != ncol(complete)) stop("ncol of marg and complete do not match.")
-
   ## 1. Run code in C
-  .Call('imputeMulti_marg_comp_compare', PACKAGE = 'imputeMulti',
-        marg, complete, marg_to_complete)
+  .Call('imputeMulti_xy_compare', PACKAGE = 'imputeMulti', mat_x, mat_y)
+  # mat_to_mat_compare(mat_x, mat_y, na.rm= TRUE)
+}
+
+#--------------------------------------
+# The below provides the same functionality as mx_my_compare() but in R
+# Much slower in R than in c++, even though c++ implementation is currently inefficient
+#--------------------------------------
+# 1. helper function at item level
+is_trueNA <- function(x) {return(x == TRUE || is.na(x))}
+
+# 2. helper function at vector level
+item_vec_compare <- function(item, vec, idx) {
+  tmp <- item == vec[idx]
+  idx[sapply(tmp, is_trueNA)]
+}
+
+# 3. helper function at vec <> mat level
+vec_to_mat_equal <- function(vec, mat, na.rm=TRUE) {
+  N <- length(vec)
+  idx <- 1:nrow(mat)
+  for (i in 1:N) {
+    if (length(idx) == 0) return(NULL)
+    idx <- item_vec_compare(vec[i], mat[,i], idx)
+  }
+  return(idx)
+}
+
+# 4. full wrapper -- equivalent to mx_my_compare()
+mat_to_mat_compare <- function(mat_x, mat_y, na.rm= TRUE) {
+  #if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
+  ## 0. Pre-processing: convert factors to integers
+  #mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
+  #mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
+  # run code
+  vec <- split(mat_x, 1:nrow(mat_x)); names(vec) <- NULL
+  lapply(vec, vec_to_mat_equal, mat= mat_y, na.rm= na.rm)
 }

@@ -7,16 +7,16 @@ using namespace Rcpp;
 using namespace std;
 
 
-// @title count compare (internal only)
-// @description Given a dataset and a data.frame of comparison patterns,
-// count the number of occurances of each pattern. Internally called by \code{count_levels}.
-// @param dat A \code{data.frame}. All variables must be factors
-// @param x A \code{data.frame} consisting of all possible patterns for matching
-// with \code{dat}.
-// @param hasNA A string. Denotes if \code{dat} has complete data or not.
-  // \code{"no"} - there are no missing values, count observed patterns
-  // \code{"count.obs"} - there are missing values, count the marginally observed patterns
-  // \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
+//' @title count compare (internal only)
+//' @description Given a dataset and a data.frame of comparison patterns,
+//' count the number of occurances of each pattern. Internally called by \code{count_levels}.
+//' @param dat A \code{data.frame}. All variables must be factors
+//' @param x A \code{data.frame} consisting of all possible patterns for matching
+//' with \code{dat}.
+//' @param hasNA A string. Denotes if \code{dat} has complete data or not.
+  //' \code{"no"} - there are no missing values, count observed patterns
+  //' \code{"count.obs"} - there are missing values, count the marginally observed patterns
+  //' \code{"count.miss"} - there are missing values, count the full observed-and-missing patterns
 
 // [[Rcpp::export]]
 IntegerVector count_compare (IntegerMatrix& x, IntegerMatrix& dat, const std::string& hasNA) {
