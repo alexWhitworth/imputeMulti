@@ -4,15 +4,22 @@
 # wrapper to supDistC to move error checking outside of C++
 supDist <- function(x,y) {
   if (length(x) != length(y)) stop("Length of x and y differ.")
-  .Call('imputeMulti_supDistC', PACKAGE = 'imputeMulti', x, y)
+  supDistC(x,y)
 }
 
 # convert a factor-vector to an integer vector, where the integers correspond
 # to the levels of the factor.
 fact_to_int <- function(f) {
-  l <- levels(f)
-  return(unlist(sapply(f, function(i) {
-    ifelse(is.na(i), NA, which(i == l))})))
+  if (is.factor(f)) {
+    l <- levels(f)
+    return(unlist(
+      sapply(f, function(i) {
+        ifelse(!is.na(i), which(i == l), NA)
+      })
+    ))
+  } else {
+    return(f)
+  }
 }
 
 # function to get the character mapping from a factor type
@@ -20,6 +27,33 @@ get_level_text <- function(var, val) {
   lvls <- levels(var)
   return(lvls[val])
 }
+
+# @description Compare two two-dimensional arrays (\code{mat_x}, \code{mat_y}), where \code{mat_x}
+# permits missing values. Return a \code{list} of length \code{nrow(mat_x)} such that each list
+# element contains a vector of row indices from \code{mat_y} with row-equivalence of the non
+# missing values.
+# @param mat_x A two dimensional array which may contain missing values
+# @param mat_y A two dimensional array without missing values
+# @return A \code{list} of matches.
+mx_my_compare <- function(mat_x, mat_y) {
+  if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
+  ## 0. Pre-processing: convert factors to integers
+  if (is.matrix(mat_x)) {
+    mat_x <- apply(mat_x, 2, fact_to_int)
+  } else {
+    mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
+  }
+  if (is.matrix(mat_y)) {
+    mat_y <- apply(mat_y, 2, fact_to_int)
+  } else {
+    mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
+  }
+  
+  ## 1. Run code in C
+  xy_compare(mat_x, mat_y)
+  # mat_to_mat_compare(mat_x, mat_y, na.rm= TRUE)
+}
+
 
 #### internal
 # @title Count Levels
@@ -76,24 +110,6 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
   return(enum_list[!is.na(enum_list$counts) & enum_list$counts > 0,])
 }
 
-
-# @description Compare two two-dimensional arrays (\code{mat_x}, \code{mat_y}), where \code{mat_x}
-# permits missing values. Return a \code{list} of length \code{nrow(mat_x)} such that each list
-# element contains a vector of row indices from \code{mat_y} with row-equivalence of the non
-# missing values.
-# @param mat_x A two dimensional array which may contain missing values
-# @param mat_y A two dimensional array without missing values
-# @return A \code{list} of matches.
-mx_my_compare <- function(mat_x, mat_y) {
-  if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
-  ## 0. Pre-processing: convert factors to integers
-  mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
-  mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
-  
-  ## 1. Run code in C
-  .Call('imputeMulti_xy_compare', PACKAGE = 'imputeMulti', mat_x, mat_y)
-  # mat_to_mat_compare(mat_x, mat_y, na.rm= TRUE)
-}
 
 #--------------------------------------
 # The below provides the same functionality as mx_my_compare() but in R

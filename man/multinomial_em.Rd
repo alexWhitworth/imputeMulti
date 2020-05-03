@@ -4,9 +4,17 @@
 \alias{multinomial_em}
 \title{EM algorithm for multinomial data}
 \usage{
-multinomial_em(x_y, z_Os_y, enum_comp, n_obs, conj_prior = c("none",
-  "data.dep", "flat.prior", "non.informative"), alpha = NULL, tol = 5e-07,
-  max_iter = 10000, verbose = FALSE)
+multinomial_em(
+  x_y,
+  z_Os_y,
+  enum_comp,
+  n_obs,
+  conj_prior = c("none", "data.dep", "flat.prior", "non.informative"),
+  alpha = NULL,
+  tol = 5e-07,
+  max_iter = 10000,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x_y}{A \code{data.frame} of observed counts for complete observations.}
@@ -54,4 +62,3 @@ of a Dirichlet conjugate prior.
 \seealso{
 \code{\link{multinomial_data_aug}}, \code{\link{multinomial_impute}}
 }
-

@@ -4,9 +4,14 @@
 \alias{multinomial_impute}
 \title{Impute Values for missing multinomial values}
 \usage{
-multinomial_impute(dat, method = c("EM", "DA"), conj_prior = c("none",
-  "data.dep", "flat.prior", "non.informative"), alpha = NULL,
-  verbose = FALSE, ...)
+multinomial_impute(
+  dat,
+  method = c("EM", "DA"),
+  conj_prior = c("none", "data.dep", "flat.prior", "non.informative"),
+  alpha = NULL,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{dat}{A \code{data.frame}. All variables must be factors.}
@@ -48,4 +53,3 @@ CRC press, 1997.
 \seealso{
 \code{\link{data_dep_prior_multi}}, \code{\link{multinomial_em}}
 }
-

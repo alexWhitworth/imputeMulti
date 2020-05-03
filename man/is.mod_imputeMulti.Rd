@@ -16,4 +16,3 @@ Returns \code{TRUE} if its argument has class "mod_imputeMulti" among its classe
 \description{
 Function that checks if the target object is a \code{mod_imputeMulti} object.
 }
-

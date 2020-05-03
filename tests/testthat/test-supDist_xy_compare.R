@@ -27,13 +27,13 @@ test_that("errors work; return type is correct", {
   x2 <- rbind(x2,x2)
   x3 <- x2[,1:5]
   
-  expect_error(mx_my_compare(x, x2, FALSE))
-  expect_error(mx_my_compare(x, x2, TRUE))
+  expect_error(mx_my_compare(x, x2))
+  expect_error(mx_my_compare(x, x2))
   
-  expect_true(is.list(marg_comp_compare(x, x3, FALSE)))
-  expect_true(is.list(marg_comp_compare(x, x3, TRUE)))
-  expect_equal(length(marg_comp_compare(x, x3, FALSE)), 2)
-  expect_equal(length(marg_comp_compare(x, x3, TRUE)), 2)
+  expect_true(is.list(mx_my_compare(x, x3)))
+  expect_true(is.list(mx_my_compare(x, x3)))
+  expect_equal(length(mx_my_compare(x, x3)), 2)
+  expect_equal(length(mx_my_compare(x, x3)), 2)
 })
 
 test_that("xy_compare works correctly", {

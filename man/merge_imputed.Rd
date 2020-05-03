@@ -17,4 +17,3 @@ merge_imputed(impute_obj, y, ...)
 Merge the imputed dataset from an  \code{imputeMulti} object with the original dataset. 
 Merging is done by rownames, since imputeMulti maintains row-order during imputation.
 }
-

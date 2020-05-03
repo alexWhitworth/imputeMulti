@@ -43,15 +43,10 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP imputeMulti_supDistC(SEXP, SEXP);
-RcppExport SEXP imputeMulti_xy_compare(SEXP, SEXP);
-
 static const R_CallMethodDef CallEntries[] = {
     {"_imputeMulti_count_compare", (DL_FUNC) &_imputeMulti_count_compare, 3},
     {"_imputeMulti_supDistC", (DL_FUNC) &_imputeMulti_supDistC, 2},
     {"_imputeMulti_xy_compare", (DL_FUNC) &_imputeMulti_xy_compare, 2},
-    {"imputeMulti_supDistC",   (DL_FUNC) &imputeMulti_supDistC,   2},
-    {"imputeMulti_xy_compare", (DL_FUNC) &imputeMulti_xy_compare, 2},
     {NULL, NULL, 0}
 };
 

@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @importFrom Rcpp sourceCpp, evalCpp
+#' @importFrom Rcpp sourceCpp
 ## usethis namespace: end
 NULL
 

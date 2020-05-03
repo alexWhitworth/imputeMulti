@@ -28,4 +28,3 @@ or enumerate all possible observed patterns from a multivariate multinomial data
  marg_obs_suff_stats <- multinomial_stats(tract2221, output= "z_Os_y")
 }
 }
-

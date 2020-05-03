@@ -16,11 +16,14 @@ search_z_Os_y <- function(z_Os_y, x_possible) {
   x_possible2 <- x_possible
   x_possible2$rownames <- 1:nrow(x_possible2)
   RSQLite::dbWriteTable(x_p, "x_possible", x_possible2)
-  RSQLite::dbGetQuery(x_p, paste0("create index idx on x_possible (", paste(names(x_possible),collapse=", "), ")"))
+  DBI::dbGetQuery(x_p, paste0("create index idx on x_possible (", paste(names(x_possible),collapse=", "), ")"))
   
   ## run
+  oldw <- getOption("warn")
+  options(warn= -1) # suppress warnings from result_fetch(res@ptr, n = n)
+  on.exit(options(warn= oldw))
   for (s in 1:nrow(z_Os_y)) {
-    search_out[[s]] <- as.integer(RSQLite::dbGetQuery(x_p, create_search_query(z_Os_y, 
+    search_out[[s]] <- as.integer(DBI::dbGetQuery(x_p, create_search_query(z_Os_y, 
                           z_Os_y[s, -ncol(z_Os_y)], var_names= names(x_possible)))$rownames)
   }
   return(search_out)
@@ -66,12 +69,12 @@ count_sumStats <- function(x_possible, dat, hasNA= c("no", "count.obs", "count.m
   # setup database
   x_p <- RSQLite::dbConnect(RSQLite::SQLite(), ":memory:")
   RSQLite::dbWriteTable(x_p, "dat", dat)
-  RSQLite::dbGetQuery(x_p, paste0("create index idx on dat (", paste(names(dat),collapse=", "), ")"))
+  DBI::dbGetQuery(x_p, paste0("create index idx on dat (", paste(names(dat),collapse=", "), ")"))
   nm <- names(x_possible)
   x_possible$counts <- 0
 
   for (i in 1:nrow(x_possible)) {
-    x_possible$counts[i] <-  RSQLite::dbGetQuery(x_p, create_count_query(x_possible, x_possible[i,], nm))$cnt
+    x_possible$counts[i] <-  DBI::dbGetQuery(x_p, create_count_query(x_possible, x_possible[i,], nm))$cnt
   }
   return(x_possible[!is.na(x_possible$counts) & x_possible$counts > 0,])
 }

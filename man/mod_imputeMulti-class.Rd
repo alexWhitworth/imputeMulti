@@ -2,20 +2,20 @@
 % Please edit documentation in R/class_imputeMulti.R, R/methods_imputeMulti.R
 \docType{class}
 \name{mod_imputeMulti-class}
+\alias{mod_imputeMulti-class}
+\alias{show-mod_imputeMulti}
+\alias{show,mod_imputeMulti-method}
+\alias{get_parameters}
+\alias{get_parameters,mod_imputeMulti-method}
+\alias{get_prior}
+\alias{get_prior,mod_imputeMulti-method}
 \alias{get_iterations}
 \alias{get_iterations,mod_imputeMulti-method}
 \alias{get_logLik}
 \alias{get_logLik,mod_imputeMulti-method}
 \alias{get_method}
 \alias{get_method,mod_imputeMulti-method}
-\alias{get_parameters}
-\alias{get_parameters,mod_imputeMulti-method}
-\alias{get_prior}
-\alias{get_prior,mod_imputeMulti-method}
-\alias{mod_imputeMulti-class}
 \alias{n_miss,imputeMulti-method}
-\alias{show,mod_imputeMulti-method}
-\alias{show-mod_imputeMulti}
 \title{Class "mod_imputeMulti"}
 \usage{
 \S4method{show}{mod_imputeMulti}(object)
@@ -69,13 +69,14 @@ the sufficient statistics and parameters.
 
 \item{\code{mle_x_y}}{the MLE estimate of the sufficient statistics and parameters}
 }}
+
 \section{Objects from the class}{
  Objects are created by calls to
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 \code{\link{multinomial_data_aug}}.
 }
+
 \seealso{
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 \code{\link{multinomial_data_aug}}
 }
-

@@ -2,12 +2,12 @@
 % Please edit documentation in R/class_imputeMulti.R, R/methods_imputeMulti.R
 \docType{class}
 \name{imputeMulti-class}
+\alias{imputeMulti-class}
+\alias{show-imputeMulti}
+\alias{show,imputeMulti-method}
 \alias{get_imputations}
 \alias{get_imputations,imputeMulti-method}
-\alias{imputeMulti-class}
 \alias{n_miss}
-\alias{show,imputeMulti-method}
-\alias{show-imputeMulti}
 \title{Class "imputeMulti"}
 \usage{
 \S4method{show}{imputeMulti}(object)
@@ -50,13 +50,14 @@ and (3) the number of observations with missing values.
 
 \item{\code{nmiss}}{the number of observations with missing data}
 }}
+
 \section{Objects from the class}{
  Objects are created by calls to
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, or
 \code{\link{multinomial_data_aug}}.
 }
+
 \seealso{
 \code{\link{multinomial_impute}}, \code{\link{multinomial_em}}, 
 \code{\link{multinomial_data_aug}}
 }
-

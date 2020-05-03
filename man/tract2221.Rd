@@ -4,7 +4,8 @@
 \name{tract2221}
 \alias{tract2221}
 \title{Observational data on individuals living in census tract 2221}
-\format{A \code{data.frame} with 3974 rows and 10 variables. All variables are of class \code{factor}:
+\format{
+A \code{data.frame} with 3974 rows and 10 variables. All variables are of class \code{factor}:
 \describe{
    \item{age}{The individual's age coded in roughly 5 year age buckets.}
    \item{gender}{The indiviudals gender -- Male, Female}
@@ -35,7 +36,8 @@
      \code{25k_lt35k} $25000-$34999; \code{35k_lt50k} $35000-$49999; \code{50k_lt65k} $50000-$64999;
      \code{65k_lt75k} $65000-$74999; \code{gt75k} $75000+}
    \item{race}{The individual's ethnicity.}
-}}
+}
+}
 \usage{
 tract2221
 }
@@ -45,4 +47,3 @@ in Los Angeles County, CA. Data comes from the 5-year American Community Survey 
 2014. Missing values have been inserted.
 }
 \keyword{datasets}
-

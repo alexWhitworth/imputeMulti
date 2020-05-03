@@ -24,4 +24,3 @@ Dissertation. The Ohio State University, 2011.
 \seealso{
 \code{\link{expand.grid}}
 }
-
