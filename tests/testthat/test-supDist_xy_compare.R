@@ -2,7 +2,7 @@
 library(testthat)
 library(imputeMulti)
 
-context("int- supDist works")
+context("test helper functions")
 
 test_that("supDist errors and results", {
   set.seed(315)
@@ -15,6 +15,22 @@ test_that("supDist errors and results", {
   
   expect_equal(supDist(x2,y), max(abs(x2-y)))
 })
+
+test_that("fact_to_int", {
+  # 0. gen test data
+  set.seed(2345)
+  x <- sample.int(10, 5, replace=FALSE)
+  y <- sample(letters[1:10], 10, replace= FALSE)
+  xx <- as.character(sample.int(10, 5, replace= TRUE))
+  
+  # 1. test
+  expect_equal(imputeMulti:::fact_to_int(x), x)
+  expect_equal(imputeMulti:::fact_to_int(y), y)
+  expect_equal(imputeMulti:::fact_to_int(factor(x)), c(2,4,5,1,3))
+  expect_equal(imputeMulti:::fact_to_int(factor(y)), c(3,2,1,4,8,9,5,6,10,7))
+  expect_true(is.integer(imputeMulti:::fact_to_int(factor(xx))))
+  expect_true(is.integer(imputeMulti:::fact_to_int(factor(y))))
+}) 
 
 
 #--------------------------------------
@@ -36,7 +52,7 @@ test_that("errors work; return type is correct", {
   expect_equal(length(mx_my_compare(x, x3)), 2)
 })
 
-test_that("xy_compare works correctly", {
+test_that("xy_compare and mx_my_compare work correctly", {
   # set up
   set.seed(125)
   x1 <- factor(sample(1:5, size=10, replace= TRUE))
@@ -76,6 +92,15 @@ test_that("xy_compare works correctly", {
   expect_equal(unlist(imputeMulti:::mx_my_compare(dat2, dat2)), 1:10)
   expect_equal(unlist(imputeMulti:::mx_my_compare(dat, dat2)), 1:10)
   expect_equal(unlist(imputeMulti:::mx_my_compare(dat2, dat)), 1:10)
+  
+  ## on matrices
+  set.seed(14)
+  mx <- matrix(as.character(sample.int(10, 50, replace= TRUE)), ncol= 5)
+  my <- matrix(sample.int(10, 50, replace= TRUE), ncol= 5)
+  mx <- apply(mx, 2, factor); my<- apply(my, 2, factor)
+  
+  expect_equal(unlist(imputeMulti:::mx_my_compare(mx,my)), vector("integer", length= 0))
+  expect_equal(unlist(imputeMulti:::mx_my_compare(my,mx)), vector("integer", length= 0))
 })
 
 

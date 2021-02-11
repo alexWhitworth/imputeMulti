@@ -1,6 +1,7 @@
 #include <Rcpp.h>
+#include <vector>
 using namespace Rcpp;
-// using namespace std;
+using namespace std;
 
 //' @title Calculate the sup of L1 distance between x and y
 //' @description sup of L1 distance between x and y
@@ -13,11 +14,12 @@ double supDistC (const NumericVector& x, const NumericVector& y) {
   
   double sup = -1.0;
   for (int i = 0; i < nx; i++) {
-    if (std::abs(x[i] - y[i]) > sup) sup = std::abs(x[i] - y[i]);
+    if (abs(x[i] - y[i]) > sup) sup = abs(x[i] - y[i]);
   }
   return sup;
 }
 
+//' @title Compare two integer matrices, allowing missing values
 //' @description Compare two two-dimensional arrays (\code{mat_x}, \code{mat_y}), where \code{mat_x}
 //' permits missing values. Return a \code{list} of length \code{nrow(mat_x)} such that each list
 //' element contains a vector of row indices from \code{mat_y} with row-equivalence of the non
@@ -30,7 +32,7 @@ List xy_compare (IntegerMatrix& mat_x, IntegerMatrix& mat_y) {
 
   // initialize variables
   int ncol_y = mat_y.ncol(), nrow_y = mat_y.nrow(), nrow_x = mat_x.nrow(); 
-  std::vector<std::vector<int> > out(nrow_y); // output vector of vectors, will be coerced to list
+  vector<vector<int> > out(nrow_y); // output vector of vectors, will be coerced to list
   
   // iterate through -- very inefficient implementation
   for (int ci = 0; ci < nrow_y; ci++) {
@@ -47,6 +49,7 @@ List xy_compare (IntegerMatrix& mat_x, IntegerMatrix& mat_y) {
       if(is_true(all(eq))) out[ci].push_back(mj + 1); // use R's iterator syntax (ie [1,n] vs [0, n-1]
     }
   }
+  
   return wrap(out);
 }
 

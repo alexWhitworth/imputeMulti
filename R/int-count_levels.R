@@ -39,12 +39,12 @@ mx_my_compare <- function(mat_x, mat_y) {
   if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
   ## 0. Pre-processing: convert factors to integers
   if (is.matrix(mat_x)) {
-    mat_x <- apply(mat_x, 2, fact_to_int)
+    mat_x <- apply(mat_x,2, function(j) as.integer(imputeMulti:::fact_to_int(j)))
   } else {
     mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
   }
   if (is.matrix(mat_y)) {
-    mat_y <- apply(mat_y, 2, fact_to_int)
+    mat_y <- apply(mat_y, 2, function(j) as.integer(imputeMulti:::fact_to_int(j)))
   } else {
     mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
   }
@@ -137,11 +137,6 @@ vec_to_mat_equal <- function(vec, mat, na.rm=TRUE) {
 
 # 4. full wrapper -- equivalent to mx_my_compare()
 mat_to_mat_compare <- function(mat_x, mat_y, na.rm= TRUE) {
-  #if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
-  ## 0. Pre-processing: convert factors to integers
-  #mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
-  #mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
-  # run code
   vec <- split(mat_x, 1:nrow(mat_x)); names(vec) <- NULL
   lapply(vec, vec_to_mat_equal, mat= mat_y, na.rm= na.rm)
 }
