@@ -6,14 +6,5 @@ notifications:
     on_success: change
     on_failure: change
 
-env:
-  - CODECOV_TOKEN=c2411cf4-b5f8-4780-8c39-ae973c05480f
-
-service_name: travis-pro
-repo_token: wSJ2P3ZsIVQcm38t5ei4phKnF4WQ4CNvm
-
-r_github_packages:
-  - jimhester/covr
-
 after_success:
-  - Rscript -e 'covr::coveralls()'
+    - Rscript -e 'covr::codecov()'
