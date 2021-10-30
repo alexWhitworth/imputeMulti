@@ -9,13 +9,13 @@ test_that("query text works for any number of columns",{
   data(tract2221)
   t2 <- tract2221[,1:4]
   x_p <- multinomial_stats(t2, "possible.obs")
-  r1 <- data.frame(age= 4L, gender= 1L, mar= NA, edu= NA)
-  r2 <- data.frame(age= 3L, gender= 1L, mar= NA, edu= 3L)
+  r1 <- data.frame(age= 5L, gender= 1L, mar= NA, edu= NA)
+  r2 <- data.frame(age= 4L, gender= 1L, mar= NA, edu= 5L)
 
   expect_equal(imputeMulti:::create_search_query(x_p, r1, names(x_p)),
-               "select rownames from x_possible where age= '30_34'and gender= 'Female'")
+               "select rownames from x_possible where age= '30_34'and gender= 'Male'")
   expect_equal(imputeMulti:::create_search_query(x_p, r2, names(x_p)),
-               "select rownames from x_possible where age= '25_29'and gender= 'Female'and edu_attain= 'grad_deg'")
+               "select rownames from x_possible where age= '25_29'and gender= 'Male'and edu_attain= 'grad_deg'")
   
 })
 

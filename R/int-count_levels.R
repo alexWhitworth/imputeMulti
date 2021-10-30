@@ -58,7 +58,7 @@ mx_my_compare <- function(mat_x, mat_y) {
 #### internal
 # @title Count Levels
 # @description Given a dataset and a data.frame of comparison patterns,
-# count the number of occurances of each pattern.
+# count the number of occurrences of each pattern.
 # @param dat A \code{data.frame}. All variables must be factors
 # @param enum_list A \code{data.frame} consisting of all possible patterns for matching
 # with \code{dat}.
@@ -70,7 +70,8 @@ mx_my_compare <- function(mat_x, mat_y) {
 # @param cores How many cores do you wish to leave open to other processing?
 #
 count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss"),
-                         parallel= FALSE, cores = getOption("mc.cores", parallel::detectCores() - 1)) {
+                         parallel= FALSE, 
+                         cores = getOption("mc.cores", parallel::detectCores() - 1)) {
   # parameter checking
   hasNA <- match.arg(hasNA, several.ok= FALSE)
   if (parallel == TRUE) {

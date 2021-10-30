@@ -22,7 +22,8 @@ multinomial_stats <- function(dat, output= c("x_y", "z_Os_y", "possible.obs")) {
   
   if (!all(apply(dat, 2, is.factor))) {
     # enforce factor variables
-    dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
+    setDT(dat)
+    dat <- dat[, lapply(.SD, factor)]
   }
   
   # 01. build empty contingency table
@@ -33,7 +34,7 @@ multinomial_stats <- function(dat, output= c("x_y", "z_Os_y", "possible.obs")) {
     enum <- expand.grid(sapply(dat, function(x) return(c(levels(x), NA))))
     enum_comp <- enum[stats::complete.cases(enum),] 
     enum_miss <- enum[!stats::complete.cases(enum),]
-    enum_miss <- enum_miss[apply(enum_miss, 1, function(x) !all(is.na(x))),] # not all missing
+    enum_miss <- enum_miss[apply(enum_miss, 1, function(x) !all(is.na(x))),] # exclude all missing
   }
   rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
   

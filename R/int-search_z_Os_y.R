@@ -1,34 +1,4 @@
 
-# @title Pattern matching marginally missing to complete
-# @description Performs pattern matching from marginally missing (z_Os_y) to potential
-# complete observations (x_possible). Uses RSQLite instead of C++ selection search (marg_comp_compare)
-# @param z_Os_y the marginally missing observations
-# @param x_possible the set of possible fully observed observations
-search_z_Os_y <- function(z_Os_y, x_possible) {
-  if (is.null(names(x_possible)) | is.null(names(z_Os_y))) stop("both arguments / parameters must have names.")
-  if (any(is.na(names(x_possible))) | any(is.na(names(z_Os_y)))) 
-    stop("names may not be NA.")
-  
-  ## setup output list and SQLite database
-  search_out <- vector("list", length= nrow(z_Os_y))
-  
-  x_p <- RSQLite::dbConnect(RSQLite::SQLite(), ":memory:")
-  x_possible2 <- x_possible
-  x_possible2$rownames <- 1:nrow(x_possible2)
-  RSQLite::dbWriteTable(x_p, "x_possible", x_possible2)
-  DBI::dbGetQuery(x_p, paste0("create index idx on x_possible (", paste(names(x_possible),collapse=", "), ")"))
-  
-  ## run
-  oldw <- getOption("warn")
-  options(warn= -1) # suppress warnings from result_fetch(res@ptr, n = n)
-  on.exit(options(warn= oldw))
-  for (s in 1:nrow(z_Os_y)) {
-    search_out[[s]] <- as.integer(DBI::dbGetQuery(x_p, create_search_query(z_Os_y, 
-                          z_Os_y[s, -ncol(z_Os_y)], var_names= names(x_possible)))$rownames)
-  }
-  return(search_out)
-}
-
 # helper fucntion for creating queries in search_z_Os_y
 create_search_query <- function(df, row, var_names) {
   idx <- which(!is.na(row))
@@ -45,16 +15,50 @@ create_search_query <- function(df, row, var_names) {
   }
 }
 
+# @title Pattern matching marginally missing to complete
+# @description Performs pattern matching from marginally missing (z_Os_y) to potential
+# complete observations (x_possible). Uses RSQLite instead of C++ selection search (marg_comp_compare)
+# @param z_Os_y the marginally missing observations
+# @param x_possible the set of possible fully observed observations
+search_z_Os_y <- function(z_Os_y, x_possible) {
+  if (is.null(names(x_possible)) | is.null(names(z_Os_y))) 
+    stop("both arguments / parameters must have names.")
+  if (any(is.na(names(x_possible))) | any(is.na(names(z_Os_y)))) 
+    stop("names may not be NA.")
+  
+  ## setup output list and SQLite database
+  search_out <- vector("list", length= nrow(z_Os_y))
+  
+  x_p <- RSQLite::dbConnect(RSQLite::SQLite(), ":memory:")
+  x_possible2 <- x_possible
+  x_possible2$rownames <- 1:nrow(x_possible2)
+  RSQLite::dbWriteTable(x_p, "x_possible", x_possible2)
+  DBI::dbExecute(x_p, paste0("create index idx on x_possible (", paste(names(x_possible),collapse=", "), ")"))
+  
+  ## run
+  oldw <- getOption("warn")
+  options(warn= -1) # suppress warnings from result_fetch(res@ptr, n = n)
+  on.exit(options(warn= oldw))
+  for (s in 1:nrow(z_Os_y)) {
+    search_out[[s]] <- DBI::dbExecute(x_p, create_search_query(z_Os_y, 
+                          z_Os_y[s, -ncol(z_Os_y)], var_names= names(x_possible)))
+  }
+  return(search_out)
+}
 
 
-# nnodes <- min(nrow(dat2), parallel::detectCores() - leave_cores)
-#   if (.Platform$OS.type != "unix") {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
-#   else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
-# 
-# comp_ind <- parallel::clusterApply(cl, x= splitRows(z_Os_y, nnodes), fun= search_z_Os_y,
-#                                      x_possible= x_possible)
-# 
-# parallel::stopCluster(cl)
+# helper fucntion for creating queries in count_sumStats
+create_count_query <- function(df, row, var_names) {
+  nx <- length(row)-1
+  q <- paste0("select count(*) as cnt from dat where ", var_names[1], "= '", row[1],"'")
+  if (nx == 1) return(q)
+  else {
+    for (i in 2:nx) {
+      q <- paste0(q, "and ", var_names[i], "= '", row[i], "'")
+    }
+    return(q)
+  }
+}
 
 
 count_sumStats <- function(x_possible, dat, hasNA= c("no", "count.obs", "count.miss")) {
@@ -69,25 +73,22 @@ count_sumStats <- function(x_possible, dat, hasNA= c("no", "count.obs", "count.m
   # setup database
   x_p <- RSQLite::dbConnect(RSQLite::SQLite(), ":memory:")
   RSQLite::dbWriteTable(x_p, "dat", dat)
-  DBI::dbGetQuery(x_p, paste0("create index idx on dat (", paste(names(dat),collapse=", "), ")"))
+  DBI::dbExecute(x_p, paste0("create index idx on dat (", paste(names(dat),collapse=", "), ")"))
   nm <- names(x_possible)
   x_possible$counts <- 0
 
   for (i in 1:nrow(x_possible)) {
-    x_possible$counts[i] <-  DBI::dbGetQuery(x_p, create_count_query(x_possible, x_possible[i,], nm))$cnt
+    x_possible$counts[i] <-  DBI::dbExecute(x_p, create_count_query(x_possible, x_possible[i,], nm))$cnt
   }
   return(x_possible[!is.na(x_possible$counts) & x_possible$counts > 0,])
 }
 
-create_count_query <- function(df, row, var_names) {
-  nx <- length(row)-1
-  q <- paste0("select count(*) as cnt from dat where ", var_names[1], "= '", row[1],"'")
-  if (nx == 1) return(q)
-  else {
-    for (i in 2:nx) {
-      q <- paste0(q, "and ", var_names[i], "= '", row[i], "'")
-    }
-    return(q)
-  }
-}
 
+# nnodes <- min(nrow(dat2), parallel::detectCores() - leave_cores)
+#   if (.Platform$OS.type != "unix") {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
+#   else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
+# 
+# comp_ind <- parallel::clusterApply(cl, x= splitRows(z_Os_y, nnodes), fun= search_z_Os_y,
+#                                      x_possible= x_possible)
+# 
+# parallel::stopCluster(cl)
