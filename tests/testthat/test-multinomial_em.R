@@ -27,19 +27,19 @@ test_that("multinomial EM is converging", {
   enum_miss <- enum_w_miss[!complete.cases(enum_w_miss),]
   # 01. Run 6 iterations, make sure log-lik is increasing
   #------------------------------------
-  iter1 <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
-                          n_obs= nrow(dat), conj_prior= "none", 
-                          verbose= FALSE, max_iter= 1)
   iter2 <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                           n_obs= nrow(dat), conj_prior= "none", 
-                          verbose= FALSE, max_iter= 2) 
+                          verbose= FALSE, max_iter= 2)
+  iter4 <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
+                          n_obs= nrow(dat), conj_prior= "none", 
+                          verbose= FALSE, max_iter= 4) 
   iter6 <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                           n_obs= nrow(dat), conj_prior= "none", 
                           verbose= FALSE, max_iter= 6) 
   
   # tests:
-  expect_lt(iter1@mle_log_lik, iter1@mle_log_lik)
-  expect_lt(iter1@mle_log_lik, iter6@mle_log_lik)
+  expect_lt(iter2@mle_log_lik, iter4@mle_log_lik)
+  expect_lt(iter2@mle_log_lik, iter6@mle_log_lik)
   expect_lte(iter2@mle_log_lik, iter6@mle_log_lik)
   expect_null(iter6@mle_x_y$alpha) # no prior
   expect_null(iter6@mle_x_y$counts)

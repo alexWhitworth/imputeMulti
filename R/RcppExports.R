@@ -23,15 +23,3 @@ supDistC <- function(x, y) {
     .Call('_imputeMulti_supDistC', PACKAGE = 'imputeMulti', x, y)
 }
 
-#' @title Compare two integer matrices, allowing missing values
-#' @description Compare two two-dimensional arrays (\code{mat_x}, \code{mat_y}), where \code{mat_x}
-#' permits missing values. Return a \code{list} of length \code{nrow(mat_x)} such that each list
-#' element contains a vector of row indices from \code{mat_y} with row-equivalence of the non
-#' missing values.
-#' @param mat_x A two dimensional array which may contain missing values
-#' @param mat_y A two dimensional array without missing values
-#' @return A \code{list} of matches.
-xy_compare <- function(mat_x, mat_y) {
-    .Call('_imputeMulti_xy_compare', PACKAGE = 'imputeMulti', mat_x, mat_y)
-}
-

@@ -45,11 +45,6 @@ test_that("errors work; return type is correct", {
   
   expect_error(mx_my_compare(x, x2))
   expect_error(mx_my_compare(x, x2))
-  
-  expect_true(is.list(mx_my_compare(x, x3)))
-  expect_true(is.list(mx_my_compare(x, x3)))
-  expect_equal(length(mx_my_compare(x, x3)), 2)
-  expect_equal(length(mx_my_compare(x, x3)), 2)
 })
 
 test_that("xy_compare and mx_my_compare work correctly", {
@@ -67,12 +62,6 @@ test_that("xy_compare and mx_my_compare work correctly", {
   dat <- t(apply(dat, 1, function(x) {x[sample.int(length(x),1)] <- NA; return(x)}))
   rm(x1,x2,x3,x4,x5)
   
-  
-  expect_equal(unlist(imputeMulti:::xy_compare(dat, dat)), 1:10)
-  expect_equal(unlist(imputeMulti:::xy_compare(dat2, dat2)), 1:10)
-  expect_equal(unlist(imputeMulti:::xy_compare(dat, dat2)), 1:10)
-  expect_equal(unlist(imputeMulti:::xy_compare(dat2, dat)), 1:10)
-  
   set.seed(125)
   dat2 <- data.frame(x1= factor(sample(1:5, size=10, replace= TRUE)),
                      x2= factor(sample(6:10, size=10, replace= TRUE)),
@@ -88,19 +77,17 @@ test_that("xy_compare and mx_my_compare work correctly", {
   dat[c(7,9),4] <- NA
   dat[c(4,10),5] <- NA
   
-  expect_equal(unlist(imputeMulti:::mx_my_compare(dat, dat)), c(1:2,5,3,4,2,5:10))
   expect_equal(unlist(imputeMulti:::mx_my_compare(dat2, dat2)), 1:10)
   expect_equal(unlist(imputeMulti:::mx_my_compare(dat, dat2)), 1:10)
-  expect_equal(unlist(imputeMulti:::mx_my_compare(dat2, dat)), 1:10)
   
   ## on matrices
-  set.seed(14)
-  mx <- matrix(as.character(sample.int(10, 50, replace= TRUE)), ncol= 5)
-  my <- matrix(sample.int(10, 50, replace= TRUE), ncol= 5)
-  mx <- apply(mx, 2, factor); my<- apply(my, 2, factor)
-  
-  expect_equal(unlist(imputeMulti:::mx_my_compare(mx,my)), vector("integer", length= 0))
-  expect_equal(unlist(imputeMulti:::mx_my_compare(my,mx)), vector("integer", length= 0))
+  # set.seed(14)
+  # mx <- matrix(as.character(sample.int(10, 50, replace= TRUE)), ncol= 5)
+  # my <- matrix(sample.int(10, 50, replace= TRUE), ncol= 5)
+  # mx <- apply(mx, 2, factor); my<- apply(my, 2, factor)
+  # 
+  # expect_equal(unlist(imputeMulti:::mx_my_compare(mx,my)), vector("integer", length= 0))
+  # expect_equal(unlist(imputeMulti:::mx_my_compare(my,mx)), vector("integer", length= 0))
 })
 
 

@@ -18,8 +18,8 @@ patterns.}
 A \code{data.frame} containing either sufficient statistics or possible observed patterns.
 }
 \description{
-Calculate observed-data sufficient statistics, marginally-observed summary statistics,
-or enumerate all possible observed patterns from a multivariate multinomial dataset.
+Calculate observed-data sufficient statistics, marginally-observed summary 
+statistics or enumerate all possible observed patterns from a multivariate multinomial dataset.
 }
 \examples{
 \dontrun{

@@ -32,26 +32,30 @@ get_level_text <- function(var, val) {
 # permits missing values. Return a \code{list} of length \code{nrow(mat_x)} such that each list
 # element contains a vector of row indices from \code{mat_y} with row-equivalence of the non
 # missing values.
-# @param mat_x A two dimensional array which may contain missing values
-# @param mat_y A two dimensional array without missing values
+# @param DT_x A \code{data.table} which may contain missing values
+# @param DT_y A \code{data.table} without missing values
 # @return A \code{list} of matches.
-mx_my_compare <- function(mat_x, mat_y) {
-  if (ncol(mat_x) != ncol(mat_y)) stop("ncol of mat_x and mat_y do not match.")
+mx_my_compare <- function(DT_x, DT_y) {
+  if (ncol(DT_x) != ncol(DT_y)) stop("ncol of DT_x and DT_y do not match.")
   ## 0. Pre-processing: convert factors to integers
-  if (is.matrix(mat_x)) {
-    mat_x <- apply(mat_x,2, function(j) as.integer(imputeMulti:::fact_to_int(j)))
-  } else {
-    mat_x <- do.call("cbind", lapply(mat_x, fact_to_int))
-  }
-  if (is.matrix(mat_y)) {
-    mat_y <- apply(mat_y, 2, function(j) as.integer(imputeMulti:::fact_to_int(j)))
-  } else {
-    mat_y <- do.call("cbind", lapply(mat_y, fact_to_int))
+  data.table::setDT(DT_x); data.table::setDT(DT_y)
+  res <- vector("list", length= nrow(DT_x))
+  join_cols <- names(DT_x)
+  DT_y[, rowid := .I]
+  
+  for (s in seq_len(nrow(DT_x))) {
+    tmp <- DT_x[s,]
+    na_idx <- which(apply(tmp, 1, is.na))
+    if (length(na_idx) > 0) {
+      res[[s]] <- DT_y[tmp, on= join_cols[-na_idx]]$rowid  
+    }
+    else {
+      res[[s]] <- DT_y[tmp, on= join_cols]$rowid
+    }
   }
   
-  ## 1. Run code in C
-  xy_compare(mat_x, mat_y)
-  # mat_to_mat_compare(mat_x, mat_y, na.rm= TRUE)
+  DT_y[, rowid := NULL]
+  return(res)
 }
 
 
@@ -109,35 +113,4 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
   }
   # return
   return(enum_list[!is.na(enum_list$counts) & enum_list$counts > 0,])
-}
-
-
-#--------------------------------------
-# The below provides the same functionality as mx_my_compare() but in R
-# Much slower in R than in c++, even though c++ implementation is currently inefficient
-#--------------------------------------
-# 1. helper function at item level
-is_trueNA <- function(x) {return(x == TRUE || is.na(x))}
-
-# 2. helper function at vector level
-item_vec_compare <- function(item, vec, idx) {
-  tmp <- item == vec[idx]
-  idx[sapply(tmp, is_trueNA)]
-}
-
-# 3. helper function at vec <> mat level
-vec_to_mat_equal <- function(vec, mat, na.rm=TRUE) {
-  N <- length(vec)
-  idx <- 1:nrow(mat)
-  for (i in 1:N) {
-    if (length(idx) == 0) return(NULL)
-    idx <- item_vec_compare(vec[i], mat[,i], idx)
-  }
-  return(idx)
-}
-
-# 4. full wrapper -- equivalent to mx_my_compare()
-mat_to_mat_compare <- function(mat_x, mat_y, na.rm= TRUE) {
-  vec <- split(mat_x, 1:nrow(mat_x)); names(vec) <- NULL
-  lapply(vec, vec_to_mat_equal, mat= mat_y, na.rm= na.rm)
 }

@@ -11,13 +11,14 @@ impute_multinomial <- function(miss_val, row_ind, MLEx_y) {
   ml_vals <- MLEx_y[row_ind,]
   ml_vals <- ml_vals[which.max(ml_vals$theta_y),]
   
+  miss_val <- data.frame(miss_val)
   if (nrow(ml_vals) == 1) {
-    miss_val[which(is.na(miss_val))] <- ml_vals[which(is.na(miss_val))]
+    miss_val[,which(is.na(miss_val))] <- ml_vals[which(is.na(miss_val))]
   } else {
     imp <- ml_vals[sample.int(nrow(ml_vals), size= 1),]
     miss_val[which(is.na(miss_val))] <- imp[which(is.na(miss_val))]
   }
-  return(miss_val)
+  return(data.table::setDT(miss_val))
 }
 
 # this provides a wrapper to \code{\link{impute_multinomial}} above such 

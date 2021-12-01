@@ -9,9 +9,10 @@
 #' @seealso \code{\link{expand.grid}}
 #' @export
 data_dep_prior_multi <- function(dat) {
-  if (!all(apply(dat, 2, is.factor))) {
+  data.table::setDT(dat)
+  if (!all(unlist(lapply(dat, is.factor)))) {
     # enforce factor variables
-    dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
+    dat <- dat[, lapply(.SD, as.factor)]
   }
   
   enum <- expand.grid(sapply(dat, levels))
@@ -31,7 +32,7 @@ data_dep_prior_multi <- function(dat) {
   names(prior)[ncol(prior)] <- "alpha" # naming convention of dirichlet prior
   prior$alpha <- ifelse(is.na(prior$alpha), 1, prior$alpha)
   
-  return(prior)
+  return(data.table::setDT(prior))
 }
 
 
@@ -82,6 +83,6 @@ check_prior <- function(dat, conj_prior= c("none", "data.dep", "flat.prior", "no
       enum_comp$theta_y <- stats::runif(nrow(enum_comp))
       enum_comp$theta_y <- enum_comp$theta_y / sum(enum_comp$theta_y)
     }
-    return(enum_comp)
+    return(data.table::setDT(enum_comp))
   }
 }

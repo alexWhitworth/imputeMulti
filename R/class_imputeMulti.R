@@ -1,4 +1,6 @@
 
+#' @import data.table
+
 # inheritance checks
 
 #' @title Check mod_imputeMulti Class

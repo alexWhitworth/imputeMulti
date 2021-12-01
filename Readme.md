@@ -1,12 +1,10 @@
 imputeMulti: Imputation methods for multivariate multinomial data
 ====
 
-<!-- badges: start -->
-    [![Build Status](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)
-    [![Codecov test coverage](https://codecov.io/gh/alexWhitworth/imputeMulti/branch/master/graph/badge.svg)](https://codecov.io/gh/alexWhitworth/imputeMulti?branch=master)
-    [![CRAN version](http://www.r-pkg.org/badges/version/imputeMulti)](https://cran.r-project.org/package=imputeMulti)
-<!-- badges: end -->
 
+[![Build Status](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)](https://travis-ci.org/alexWhitworth/imputeMulti.svg?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/alexWhitworth/imputeMulti/branch/master/graph/badge.svg)](https://codecov.io/gh/alexWhitworth/imputeMulti?branch=master)
+[![CRAN version](http://www.r-pkg.org/badges/version/imputeMulti)](https://cran.r-project.org/package=imputeMulti)
 
 ## Features:
 - Uses S4 classes.

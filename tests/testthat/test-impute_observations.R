@@ -12,7 +12,7 @@ test_that("missing value imputation works", {
   dat_comp <- dat[complete.cases(dat),]
   dat_miss <- dat[!complete.cases(dat),]
   
-  # 01. Run 6 iterations, imputate missing values
+  # 01. Run 6 iterations, impute missing values
   #------------------------------------
   iter6 <- multinomial_em(x_y= x_y, z_Os_y= z_Os_y, enum_comp= enum_comp, 
                           n_obs= nrow(dat), conj_prior= "none", 
@@ -25,10 +25,9 @@ test_that("missing value imputation works", {
   #------------------------------------
   expect_equal(sum(!complete.cases(imputed_data)), 0)
   expect_equal(sum(complete.cases(dat_miss2)), nrow(dat_miss2))
-  for (i in 1:ncol(dat_miss2)) {
-    expect_equal(levels(dat_miss2[,i]), levels(dat[,i]))
-  }
-  
+  expect_equal(
+    lapply(dat_miss2, levels), lapply(dat, levels)
+  )
 })
 
 

@@ -53,7 +53,7 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
   if (verbose) print("Setting up Iteration 1.")
   # pattern match marginally missing to complete
   no_col_XP <- which(names(enum_comp) %in% c("alpha", "theta_y"))
-  comp_ind <- search_z_Os_y(z_Os_y, enum_comp[,-no_col_XP])
+  comp_ind <- search_z_Os_y(z_Os_y, enum_comp[,-no_col_XP, with= FALSE])
   
   # 02. E and M Steps
   #----------------------------------------------

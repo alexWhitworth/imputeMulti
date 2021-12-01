@@ -28,10 +28,8 @@
 multinomial_impute <- function(dat, method= c("EM", "DA"),
                            conj_prior= c("none", "data.dep", "flat.prior", "non.informative"),
                            alpha= NULL, verbose= FALSE, ...) {
-  if (!all(apply(dat, 2, is.factor))) {
-    # enforce factor variables
-    dat <- data.frame(apply(dat, 2, function(x) as.factor(x)))
-  }
+  data.table::setDT(dat)
+  if (!all(unlist(lapply(dat, is.factor)))) {dat <- dat[, lapply(.SD, as.factor)]}
   
   conj_prior <- match.arg(conj_prior, several.ok= FALSE)
   if (conj_prior %in% c("flat.prior") & is.null(alpha) ) {
@@ -50,7 +48,9 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   enum_comp <- enum[stats::complete.cases(enum),] 
   enum_miss <- enum[!stats::complete.cases(enum),]
   enum_miss <- enum_miss[apply(enum_miss, 1, function(x) !all(is.na(x))),] # not all missing
-  rownames(enum_comp) <- 1:nrow(enum_comp) # y \in Y
+  
+  data.table::setDT(enum_comp)
+  enum_comp[, rowid := .I] # y \in Y
   
   # 02. get counts / sufficient statistics
   #   parse / compute prior
@@ -73,10 +73,8 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   alpha <- check_prior(dat= dat, conj_prior= conj_prior, alpha= alpha, verbose= verbose,
                        outer= TRUE)
   
-  # 03. EM -- get MLE for theta_y
-    # NOTE:: need to implement data augmentation option
+  # 03. estimate theta_y
   #----------------------------------------------
-  
   # EM
   if (method == "EM") {
     if (length(l_dots) == 0) {
@@ -155,16 +153,6 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
              data= list(missing_data= dat_miss, imputed_data= imputed_data),
              nmiss= nrow(dat_miss)
              )
-  
-  # ret <- list(Gcall= mc, method= mle_multinomial$method,
-  #             mle_call= mle_multinomial$mle_call,
-  #             mle_iter= mle_multinomial$mle_iter, 
-  #             mle_log_lik= mle_multinomial$mle_log_lik,
-  #             mle_cp= mle_multinomial$mle_cp,
-  #             mle_x_y= mle_multinomial$mle_x_y,
-  #             data= list(missing_data= dat_miss, imputed_data= imputed_data),
-  #             nmiss= nrow(dat_miss))
-  # class(ret) <- "imputeMulti"
   
   return(ret)
   
