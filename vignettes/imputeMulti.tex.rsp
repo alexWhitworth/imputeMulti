@@ -56,7 +56,6 @@
 
 %------------------------------------------------------------
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 
 \section{Introduction}
 
