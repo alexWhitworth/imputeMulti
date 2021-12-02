@@ -5,3 +5,5 @@ Readme.Md
 .travis.yml
 tests/testthat/gen_tract2221.R
 ^codecov\.yml$
+^doc$
+^Meta$
