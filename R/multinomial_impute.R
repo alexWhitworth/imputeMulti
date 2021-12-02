@@ -50,7 +50,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   enum_miss <- enum_miss[apply(enum_miss, 1, function(x) !all(is.na(x))),] # not all missing
   
   data.table::setDT(enum_comp)
-  enum_comp[, rowid := .I] # y \in Y
+  rownames(enum_comp) <- seq_len(nrow(enum_comp))
   
   # 02. get counts / sufficient statistics
   #   parse / compute prior
@@ -136,8 +136,7 @@ multinomial_impute <- function(dat, method= c("EM", "DA"),
   # EM & DA
   if (verbose) print("Imputing missing observations via MLE results.")
   dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial@mle_x_y, p=p)
-  # dat_miss2 <- impute_multinomial_all(dat_miss, mle_multinomial$mle_x_y, p=p)
-  
+
   #combine:
   imputed_data <- rbind(dat_comp, dat_miss2)
   

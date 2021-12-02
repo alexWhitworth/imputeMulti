@@ -92,15 +92,13 @@ count_levels <- function(dat, enum_list, hasNA= c("no", "count.obs", "count.miss
     enum_list$counts <- count_compare(x= e2, dat= dat2, hasNA= hasNA)
   } else {
     # resolve edge case when nnodes > nrow(dat2)
+    # setup cluster
     nnodes <- min(nrow(dat2), cores)
-    
     if (.Platform$OS.type != "unix") {cl <- parallel::makeCluster(nnodes, type= "PSOCK")}
     else {cl <- parallel::makeCluster(nnodes, type= "FORK")}
-    
-    # 8/9/2016 -- needed since clusterExport does not work with non exported functions
-    # See: http://stackoverflow.com/questions/38836341
     parallel::clusterCall(cl, assign, "count_compare", count_compare, envir = .GlobalEnv)
     
+    # run parallel count_compare() 
     temp <- do.call("cbind", parallel::clusterApply(cl,
           # split data across clusters, share: comparison (e2) and hasNA
           x= splitRows(dat2, nnodes), fun= function(x, e2, hasNA) {
