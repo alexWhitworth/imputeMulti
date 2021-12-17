@@ -1,9 +1,9 @@
 
 
 #' @title EM algorithm for multinomial data
-#' @description Implement the EM algorithm for multvariate multinomial data given
-#' observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for specification
-#' of a Dirichlet conjugate prior.
+#' @description Implement the EM algorithm for multivariate multinomial data given
+#' observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for 
+#' specification of a Dirichlet conjugate prior.
 #' @param x_y A \code{data.frame} of observed counts for complete observations.
 #' @param z_Os_y A \code{data.frame} of observed marginal-counts for incomplete observations.
 #' @param enum_comp A \code{data.frame} specifying a vector of all possible observed patterns.
@@ -68,17 +68,20 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
       # E(x_y| z_Os_y, theta) = \sum_s [E_Xsy_Zy_theta]
       # E_Xsy_Zy_theta = (z_Os_y * theta_y) / b_Os_y
       b_Os_y <- sum(enum_comp$theta_y[unlist(comp_ind[[s]])])
-      E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[unlist(comp_ind[[s]])] / b_Os_y # normalize
+      # normalize
+      E_Xsy_Zy_theta <- z_Os_y$counts[s] * enum_comp$theta_y[unlist(comp_ind[[s]])] / b_Os_y 
 
       # expected count += proportional marginally-observed
-      enum_comp$counts[unlist(comp_ind[[s]])] <- enum_comp$counts[unlist(comp_ind[[s]])] + E_Xsy_Zy_theta
+      enum_comp$counts[unlist(comp_ind[[s]])] <- enum_comp$counts[unlist(comp_ind[[s]])] + 
+        E_Xsy_Zy_theta
       # update log-lik
       if (b_Os_y > 0) {
         log_lik <- log_lik + z_Os_y$counts[s] * log(b_Os_y)
       }
     }
     # expected count += observed counts
-    enum_comp$counts[as.integer(rownames(x_y))] <- enum_comp$counts[as.integer(rownames(x_y))] + x_y$counts
+    enum_comp$counts[as.integer(rownames(x_y))] <- enum_comp$counts[as.integer(rownames(x_y))] + 
+      x_y$counts
     # update log-lik
     log_lik <- log_lik + sum(ifelse(enum_comp$theta_y[as.integer(rownames(x_y))] == 0, 0,
                     x_y$counts * log(enum_comp$theta_y[as.integer(rownames(x_y))])))
@@ -95,8 +98,9 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
     # update iteration; print likelihood if verbose
     iter <- iter + 1
     if (verbose) {
-      cat("Iteration", iter, ": log-likelihood =", sprintf("%.10f", log_lik), "\n Convergence Criteria =",
-                sprintf("%.10f", supDist(enum_comp$theta_y, enum_comp$theta_y1)), "... \n")
+      cat("Iteration", iter, ": log-likelihood =", sprintf("%.10f", log_lik)
+          , "\n Convergence Criteria ="
+          , sprintf("%.10f", supDist(enum_comp$theta_y, enum_comp$theta_y1)), "... \n")
     }
 
   # 03. check convergence to exit and return
@@ -119,19 +123,11 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
                  mle_cp= conj_prior,
                  mle_x_y= enum_comp)
       
-      # mod <- list(method= "EM", 
-      #             mle_call= mc,
-      #             mle_iter= iter,
-      #             mle_log_lik= log_lik,
-      #             mle_cp= conj_prior,
-      #             mle_x_y= enum_comp)
-      # 
-      # class(mod) <- "mod_imputeMulti"
-
       return(mod)
+      
     } else {
-    enum_comp$theta_y <- enum_comp$theta_y1
-    log_lik0 <- log_lik
+      enum_comp$theta_y <- enum_comp$theta_y1
+      log_lik0 <- log_lik
     }
   }
   # 04. if iter >= max_iter, exit
@@ -151,14 +147,6 @@ multinomial_em <- function(x_y, z_Os_y, enum_comp, n_obs,
              mle_log_lik= log_lik,
              mle_cp= conj_prior,
              mle_x_y= enum_comp)
-  
-  # mod <- list(method= "EM", 
-  #             mle_call= mc,
-  #             mle_iter= iter,
-  #             mle_log_lik= log_lik,
-  #             mle_cp= conj_prior,
-  #             mle_x_y= enum_comp)
-  # class(mod) <- "mod_imputeMulti"
 
   return(mod)
 }

@@ -43,9 +43,9 @@ to \code{10000}.}
 An object of class \code{\link{mod_imputeMulti-class}}.
 }
 \description{
-Implement the EM algorithm for multvariate multinomial data given
-observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for specification
-of a Dirichlet conjugate prior.
+Implement the EM algorithm for multivariate multinomial data given
+observed counts of complete and missing data (\eqn{Y_obs} and \eqn{Y_mis}). Allows for 
+specification of a Dirichlet conjugate prior.
 }
 \examples{
 \dontrun{

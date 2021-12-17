@@ -16,7 +16,8 @@ setMethod("show", signature= "mod_imputeMulti",
             cat("\n Call: \n", paste(deparse(object@mle_call), sep= "\n"),
                 "\n Method: ", object@method,
                 "\n\n Iterations: ", object@mle_iter,
-                "\n\n Log-Likelihood: ", object@mle_log_lik)
+                "\n\n Log-Likelihood: ", object@mle_log_lik,
+                "\n\n")
           })
 
 
@@ -25,7 +26,7 @@ setGeneric("summary")
 # @export
 summary.mod_imputeMulti <- function(object, ...) {
   methods::show(object)
-  cat("\n\n")
+  
   if (object@mle_cp != "none") {
     summary(object@mle_x_y[, c("alpha", "theta_y")])  
   } 
@@ -130,7 +131,8 @@ setMethod("show", signature= "imputeMulti",
                 "\n Method: ", object@method,
                 "\n\n Iterations: ", object@mle_iter,
                 "\n\n Log-Likelihood: ", object@mle_log_lik,
-                "\n Number Missing: ", object@nmiss)
+                "\n Number Missing: ", object@nmiss,
+                "\n\n")
           })
 
 ## Summary

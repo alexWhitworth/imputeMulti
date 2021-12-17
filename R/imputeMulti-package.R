@@ -1,5 +1,6 @@
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
+#' @import data.table
 ## usethis namespace: end
 NULL
 

@@ -35,11 +35,11 @@
 \Shorttitle{imputeMulti}
 
 \Abstract{
-  \pkg{imputeMulti} is an \proglang{R} package for imputation of multivariate multinomial missing data. 
-  The package implements expectation-maximization and data augmentation algorithms; and also
-  allows the specification of Bayesian priors, including data-dependent priors. For performance, 
+  \pkg{imputeMulti} is an \proglang{R} package for imputation of multivariate multinomial missing data 
+  via expectation-maximization and data augmentation algorithms. The package allows the 
+  specification of Bayesian priors, including data-dependent priors. For performance, 
   calculation of the summary statistics of the multinomial distribution is implemented in 
-  \proglang{C++} and \pkg{imputeMulti} also supports these calculations in parallel. 
+  \proglang{C++}; \pkg{imputeMulti} also supports these calculations in parallel. 
   As a result, the \pkg{imputeMulti} package capably handles large datasets. In this article, 
   we introduce the package's functionality and provide a hands-on approach to solving multinomial 
   missing data problems.
